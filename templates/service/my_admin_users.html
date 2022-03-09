@@ -1,0 +1,80 @@
+
+{% extends "service/base_my_admin_users.html" %}
+{% load humanize %}
+
+
+{% block my_account_content %}
+    {% if sufficient_permission %}
+        {% if users %}
+            <div class="row my-5 ">
+                <div class="col-12">
+                    <h1 class="text-center mb-5">{{ header}}</h1>
+                </div>
+
+                <div class="col">
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Email</th>
+                                    <th scope="col">First Name</th>
+                                    <th scope="col">Last Name</th>
+                                    <th scope="col">Phone Number</th>
+                                    <th scope="col">View</th>
+                                    <th scope="col"></th>
+                                
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for user in users %}
+                                    <tr>
+                                        <th scope="row">{{ forloop.counter }}</th>
+                                        <td>{{ user.username }}</td>
+                                        <td>{{ user.first_name }}</td>
+                                        <td>{{ user.last_name }}</td>
+                                        <td>{{ user.customer.phone_number}}</td>
+                                        <td>
+                                            <a type="button" class="btn btn-outline-dark" href="{% url 'admin_users_details' user.id %}">View</a>
+                                        </td>
+                                        
+                                        <td>
+                                            {% if user.is_superuser %}
+                                                <i class="fas fa-user-edit"></i>
+                                                <i class="fas fa-user-shield"></i>
+                                            {% elif user.is_staff  %}
+                                                <i class="fas fa-user-edit"></i>
+                                            {% elif user.customer.managed == True %}
+                                                <i class="fas fa-child"></i>
+                                            {% else %}
+                                            {% endif %}
+            
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+            
+                    
+                    
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        {% else %}
+            <p class="mt-5 text-center fst-italic">
+                You currently have no users to view. 
+            </p>
+        {% endif %}
+    {% else %}
+        <div class="row">
+            <div class="col">
+                <p class="mt-5 text-center fst-italic">
+                    You have insufficient permissions
+                </p>
+            </div>
+        </div>
+    {% endif %}
+
+
+{% endblock %}

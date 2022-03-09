@@ -1,0 +1,96 @@
+{% extends "service/base_my_admin_managed_accounts.html" %}
+{% load humanize %}
+
+{% block my_account_content %}
+
+    {% if sufficient_permission %}
+        <div class="row mt-4 vh_45">
+
+            {% if messages %}
+                {% for message in messages %}
+                    {% if message.level >= 30  %}
+                        <div class="alert alert-danger mb-2" role="alert">
+                            {{message}}
+                        </div>
+                    {% else %}
+                        <div class="alert alert-success mb-2" role="alert">
+                            {{message}}
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+
+            {% if customers %}
+                <div class="row my-5 ">
+                    <div class="col">
+            
+                        <h1 class="text-center mb-5">{{ header}}</h1>
+            
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">#</th>
+                                        <th scope="col">Name</th>
+                                        <th scope="col">Email</th>
+                                        <th scope="col">Phone Number</th>
+                                        <th scope="col"></th>
+                                
+                                    
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for customer in customers reversed %}
+                                        <tr>
+                                            <th scope="row">{{ forloop.counter }}</th>
+            
+                                            <td>{{ customer.name }}</td>
+                                            <td>{{ customer.email }}</td>
+                                            <td>{{ customer.phone_number }}</td>
+                                            <td>
+                                                <form method="post" action="">
+                                                    {% csrf_token %}
+                                                    <input type="hidden" name="customer_id" value="{{ customer.id }}">
+                                                    <button type="submit" class="btn btn-primary btn-sm">Login into account</button>
+                                                </form>
+                                                
+                                            </td>
+            
+            
+                                            
+                                        </tr>
+                                    {% endfor %}
+                
+                        
+                        
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+            
+                </div>
+            {% else %}
+                <p class="mt-3 text-center fst-italic">You currently have no items to view. 
+                    <a href="{% url 'admin_create_managed_accounts' %}" class="nothing_to_view_admin_and_customer_link">Create managed accounts<a></p>
+            {% endif %}
+
+
+        </div>
+    {% else %}
+        <div class="row">
+            <div class="col">
+                <p class="mt-5 text-center fst-italic">
+                    You have insufficient permissions
+                </p>
+            </div>
+        </div>
+    {% endif %}
+
+
+
+{% endblock %}
+
+
+
+
+

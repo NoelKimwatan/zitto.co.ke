@@ -1,0 +1,154 @@
+{% extends "service/base_admin.html" %}
+{% load humanize %}
+
+{% block content %}
+
+<div class="container-fluid vh_78">
+    {% if sufficient_permission %}
+        <div class="row  pt-3">
+            <div class="col-12">
+                <div class="row ">
+
+                    <div class="col-xl-3 col-md-6 my-2">
+                        <div class="card bg-primary text-white h-100">
+                            <div class="card-body">
+                                <div>
+                                    Total users<span class="badge bg-secondary ms-2">{{ users|length }}</span>
+                                </div>
+    
+                                <div>
+                                    New users this week<span class="badge bg-secondary ms-2">{{ new_users_this_week|length }}</span>
+                                </div>
+    
+                                <div>
+                                    Active users this week<span class="badge bg-secondary ms-2">{{ active_users_this_week|length }}</span>
+                                </div>
+                            
+                            </div>
+            
+                            <div class="card-footer d-flex align-items-center justify-content-between">
+                                <a class="small text-white stretched-link card_link" href="{% url 'admin_users' %}">View Details</a>
+                                <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                            </div>
+            
+                        </div>
+                    </div>
+            
+                    <div class="col-xl-3 col-md-6 my-2">
+                        <div class="card bg-warning text-white h-100">
+                            <div class="card-body">
+                                <div>
+                                    Total in wallets<span class="badge bg-secondary ms-2">KES {{ total_in_wallets }}</span>
+                                </div>
+    
+                                <div>
+                                    Total deposits this week<span class="badge bg-secondary ms-2">KES {{ total_in_wallets }}</span>
+                                </div>
+    
+                                <div>
+                                    Total withdrawals this week<span class="badge bg-secondary ms-2">KES {{ total_in_wallets }}</span>
+                                </div>
+                                
+                            </div>
+            
+                            <div class="card-footer d-flex align-items-center justify-content-between">
+                                <a class="small text-white stretched-link card_link" href="">View Details</a>
+                                <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                            </div>
+            
+                        </div>
+                    </div>
+    
+                    <div class="col-xl-3 col-md-6 my-2">
+                        <div class="card bg-secondary text-white h-100">
+                            <div class="card-body">
+                                <div>
+                                    Orders this month<span class="badge bg-secondary ms-2">KES {{ total_in_wallets }}</span>
+                                </div>
+    
+                                <div>
+                                    Shipments this month<span class="badge bg-secondary ms-2">KES {{ total_in_wallets }}</span>
+                                </div>
+                                
+                            </div>
+            
+                            <div class="card-footer d-flex align-items-center justify-content-between">
+                                <a class="small text-white stretched-link card_link" href="{% url 'admin_orders' %}">View Details</a>
+                                <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                            </div>
+            
+                        </div>
+                    </div>
+    
+                    <div class="col-xl-3 col-md-6 my-2">
+                        <div class="card bg-success text-white h-100">
+                            <div class="card-body">
+                                <div>
+                                    Total revenue<span class="badge bg-secondary ms-2">KES {{ total_in_wallets }}</span>
+                                </div>
+    
+                                <div>
+                                    Revenue this month<span class="badge bg-secondary ms-2">KES {{ total_in_wallets }}</span>
+                                </div>
+    
+                                <div>
+                                    Total profits this month<span class="badge bg-secondary ms-2">KES {{ total_in_wallets }}</span>
+                                </div>
+                                
+                            </div>
+            
+                            <div class="card-footer d-flex align-items-center justify-content-between">
+                                <a class="small text-white stretched-link card_link" href="">View Details</a>
+                                <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                            </div>
+            
+                        </div>
+                    </div>
+    
+                </div>
+    
+                <div class="row mt-4">
+    
+                    <div class="col-xl-6">
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <i class="fas fa-chart-area me-1"></i>
+                                Monthly Revenue
+                            </div>
+                            <div class="card-body"><canvas id="myRevenueChart" width="100%" height=""></canvas></div>
+                        </div>
+                    </div>
+    
+                    <div class="col-xl-6">
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <i class="fas fa-chart-area me-1"></i>
+                                Monthly New Users
+                            </div>
+                            <div class="card-body"><canvas id="myUsersChart" width="100%" height=""></canvas></div>
+                        </div>
+                    </div>
+    
+    
+    
+                </div>
+            </div>
+        </div>
+    {% else %}
+        <div class="row">
+            <div class="col">
+                <p class="mt-5 text-center fst-italic">
+                    You have insufficient permissions
+                </p>
+            </div>
+        </div>
+    {% endif %}
+</div>
+
+
+
+
+{% endblock %}
+    
+
+

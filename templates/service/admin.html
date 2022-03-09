@@ -1,0 +1,132 @@
+{% load static %}
+{% load humanize %}
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link href="{% static 'fontawesome/css/all.min.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'css/styles.css' %}" rel="stylesheet" type="text/css">
+
+    <title>ShippingService</title>
+  </head>
+  <body>
+
+
+
+
+    <div class="container-fluid admin_theme vh_100">
+        <div class="row">
+            <div class="row">
+                <div class="col-12">
+                    <h1 class="text-center my-5">Administration Panel</h1>
+                </div>
+            </div>
+        
+            <div class="col-6 col-md-3">
+        
+                <div class="card my-2">
+                    <div class="card-body">
+                        <h5 class="card-title">Orders Under Review: {{ orders_under_review|length }}</h5>
+                        <div class="row">
+                            <div class="col d-flex justify-content-center">
+                                <a href="{% url 'admin_orders_to_review' %}" class="btn btn-primary">View</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        
+            </div>
+        
+            <div class="col-6 col-md-3">
+        
+                <div class="card my-2">
+                    <div class="card-body">
+                        <h5 class="card-title">Payment Pending: {{ orders_payment_pending|length }}</h5>
+                        <div class="row">
+                            <div class="col d-flex justify-content-center">
+                                <a href="{% url 'admin_payment_pending' %}" class="btn btn-primary">View</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        
+            </div>
+        
+            <div class="col-6 col-md-3">
+        
+                <div class="card my-2">
+                    <div class="card-body">
+                        <h5 class="card-title">Ready to Ship: {{ orders_ready_to_ship|length }}</h5>
+                        <div class="row">
+                            <div class="col d-flex justify-content-center">
+                                <a href="{% url 'admin_ready_to_ship' %}" class="btn btn-primary">View</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        
+            </div>
+        
+            <div class="col-6 col-md-3">
+        
+                <div class="card my-2">
+                    <div class="card-body">
+                        <h5 class="card-title">Shipped: {{ orders_shipped|length }}</h5>
+                        <div class="row">
+                            <div class="col d-flex justify-content-center">
+                                <a href="{% url 'admin_shipped' %}" class="btn btn-primary">View</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        
+            </div>
+        
+            <div class="col-6 col-md-3">
+        
+                <div class="card my-2">
+                    <div class="card-body">
+                        <h5 class="card-title">Completed {{ orders_completed|length }}</h5>
+                        <div class="row">
+                            <div class="col d-flex justify-content-center">
+                                <a href="{% url 'admin_completed_orders' %}" class="btn btn-primary">View</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        
+            </div>
+        
+        
+        </div>
+    </div>
+
+
+
+
+
+     
+
+        
+ 
+
+
+
+
+    
+
+    <!-- Option 1: Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    <script src="{% static 'js/main.js' %}"></script>
+</body>
+</html>
+
+
+
+
+

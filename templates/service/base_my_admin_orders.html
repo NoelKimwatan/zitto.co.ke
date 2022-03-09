@@ -1,0 +1,594 @@
+{% extends "service/base_admin.html" %}
+{% load static %}
+{% load humanize %}
+
+{% block content %}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col ">
+            <div class="navbar-color px-0 d-block d-md-none"> 
+                <button class="btn" type="button" data-bs-toggle="offcanvas" data-bs-target="#navbar_offcanvas" >
+                    <i class="fas fa-bars"></i> 
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-2 col-md-3 col-xl-2 navbar-color px-0 d-none d-md-block">
+            <ul class="nav side-navbar flex-column mb-auto">
+
+                <li class="nav-item">
+                    <a href="{% url 'admin_orders' %}" class="nav-link d-flex d-inline
+                        {% if sub_path == 'main' %}  
+                            active
+                        {% else %}
+
+                        {% endif %}
+                    ">
+                        <div class="me-0 me-md-2">
+                            <i class="fas fa-tachometer-alt"></i>
+                        </div>
+
+                        <div class="d-none d-md-block">
+                            Orders dashboard
+                        </div>
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a href="{% url 'admin_orders_to_review' %}" class="nav-link d-flex d-inline
+                        {% if sub_path == 'orders_to_review' %}  
+                            active
+                        {% else %}
+
+                        {% endif %}
+                    ">
+                        <div class="me-0 me-md-2">
+                            <i class="fas fa-search"></i>
+                        </div>
+
+                        <div class="d-none d-md-block">
+                            Orders to review
+                        </div>
+
+                        {% if orders_under_review %}
+                            <span class="badge bg-danger ms-auto">{{ orders_under_review|length }}</span>
+                        {% endif %}
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a href="{% url 'admin_payment_pending' %}" class="nav-link d-flex d-inline
+                        {% if sub_path == 'payment_pending' %}  
+                            active
+                        {% else %}
+
+                        {% endif %}
+                    ">
+                        <div class="rotate_180 me-0 me-md-2">
+                            <i class="fas fa-money-bill-wave-alt"></i>
+                        </div>
+
+                        <div class="d-none d-md-block">
+                            Payment pending
+                        </div>
+
+                        {% if orders_payment_pending %}
+                            <span class="badge bg-danger ms-auto">{{ orders_payment_pending|length }}</span>
+                        {% endif %}
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a href="{% url 'admin_items_to_purchase' %}" class="nav-link d-flex d-inline
+                        {% if sub_path == 'items_to_purchase' %}  
+                            active
+                        {% else %}
+
+                        {% endif %}
+                    ">
+                        <div class="me-0 me-md-2">
+                            <i class="fas fa-store"></i>
+                        </div>
+
+                        <div class="d-none d-md-block">
+                            Items to purchase
+                        </div>
+
+                        {% if items_to_purchase %}
+                            <span class="badge bg-danger ms-auto">{{ items_to_purchase|length }}</span>
+                        {% endif %}
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a href="{% url 'admin_purchased_orders' %}" class="nav-link d-flex d-inline
+                        {% if sub_path == 'purchased_orders' %}  
+                            active
+                        {% else %}
+
+                        {% endif %}
+                    ">
+                        <div class="me-0 me-md-2">
+                            <i class="fas fa-store"></i>
+                        </div>
+
+                        <div class="d-none d-md-block">
+                            Purchased orders
+                        </div>
+
+                        {% if purchased_orders %}
+                            <span class="badge bg-danger ms-auto">{{ purchased_orders|length }}</span>
+                        {% endif %}
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a href="{% url 'admin_ready_to_ship' %}" class="nav-link d-flex d-inline
+                        {% if sub_path == 'ready_to_ship' %}  
+                            active
+                        {% else %}
+
+                        {% endif %}
+                    ">
+                        <div class="me-0 me-md-2">
+                            <i class="fas fa-truck-loading"></i>
+                        </div>
+
+                        <div class="d-none d-md-block">
+                            Ready to ship
+                        </div>
+
+                        {% if orders_ready_to_ship %}
+                            <span class="badge bg-danger ms-auto">{{ orders_ready_to_ship|length }}</span>
+                        {% endif %}
+                    </a>
+                </li>
+
+                <li class="nav-item">
+
+                    <a href="{% url 'admin_batches' %}" class="nav-link d-flex d-inline
+                        {% if sub_path == 'batches' %}  
+                            active
+                        {% else %}
+
+                        {% endif %}
+                    ">
+                        <div class="me-0 me-md-2">
+                            <i class="fas fa-ship"></i>
+                        </div>
+
+                        <div class="d-none d-md-block">
+                            Batches
+                        </div>
+
+                        {% if batches_created_it %}
+                            <span class="badge bg-danger ms-auto">{{ batches_created_it|length }}</span>
+                        {% endif %}
+                    </a>
+                </li>
+
+
+
+                <li class="nav-item">
+
+                    <a href="{% url 'admin_completed_batches' %}" class="nav-link d-flex d-inline
+                        {% if sub_path == 'completed_batches' %}  
+                            active
+                        {% else %}
+
+                        {% endif %}
+                    ">
+                        <div class="me-0 me-md-2">
+                            <i class="fas fa-ship"></i>
+                        </div>
+
+                        <div class="d-none d-md-block">
+                            Completed batches
+                        </div>
+
+                        {% if completed_batches %}
+                            <span class="badge bg-success ms-auto">{{ completed_batches|length }}</span>
+                        {% endif %}
+                    </a>
+                </li>
+
+                <li class="nav-item">
+
+                    <a href="{% url 'admin_landed' %}" class="nav-link d-flex d-inline
+                        {% if sub_path == 'landed' %}  
+                            active
+                        {% else %}
+
+                        {% endif %}
+                    ">
+                        <div class="flip-horizontally  me-0 me-md-2">
+                            <i class="fas fa-truck-loading"></i>
+                        </div>
+
+                        <div class="d-none d-md-block">
+                            Landed orders
+                        </div>
+
+                        {% if orders_landed %}
+                            <span class="badge bg-danger ms-auto">{{ orders_landed|length }}</span>
+                        {% endif %}
+                    </a>
+                </li>
+
+                <li class="nav-item">
+
+                    <a href="{% url 'admin_ready_for_delivered' %}" class="nav-link d-flex d-inline
+                        {% if sub_path == 'ready_for_delivered' %}  
+                            active
+                        {% else %}
+
+                        {% endif %}
+                    ">
+                        <div class="me-0 me-md-2">
+                            <i class="fas fa-people-carry"></i>
+                        </div>
+
+                        <div class="d-none d-md-block">
+                            Ready for delivery
+                        </div>
+
+                        {% if orders_ready_for_delivery %}
+                            <span class="badge bg-danger ms-auto">{{ orders_ready_for_delivery|length }}</span>
+                        {% endif %}
+                    </a>
+                </li>
+
+                <li class="nav-item">
+
+                    <a href="{% url 'admin_delivered' %}" class="nav-link d-flex d-inline
+                        {% if sub_path == 'delivered' %}  
+                            active
+                        {% else %}
+
+                        {% endif %}
+                    ">
+                        <div class="me-0 me-md-2">
+                            <i class="fas fa-parachute-box"></i>
+                        </div>
+
+                        <div class="d-none d-md-block">
+                            Delivered orders
+                        </div>
+
+                        {% if orders_delivered %}
+                            <span class="badge bg-success ms-auto">{{ orders_delivered|length }}</span>
+                        {% endif %}
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a href="{% url 'admin_rejected_orders' %}" class="nav-link d-flex d-inline
+                        {% if sub_path == 'rejected_orders' %}  
+                            active
+                        {% else %}
+
+                        {% endif %}
+                    ">
+                        <div class="me-0 me-md-2">
+                            <i class="fas fa-times"></i>
+                        </div>
+
+                        <div class="d-none d-md-block">
+                            Rejected orders
+                        </div>
+
+                        {% if rejected_orders %}
+                            <span class="badge bg-danger ms-auto">{{ rejected_orders|length }}</span>
+                        {% endif %}
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="offcanvas offcanvas-start navbar-color" data-bs-scroll="false" data-bs-backdrop="true"  id="navbar_offcanvas" >
+
+            <div class="offcanvas-header ">
+                <button type="button" class="btn-close text-reset ms-auto" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            </div>
+
+            <div class="offcanvas-header d-flex justify-content-center">
+                <div class="d-flex justify-content-center">
+                    <a class="navbar-brand" href="{% url 'index' %}">
+                        <img src="{% static 'images/zitto.png' %}" alt="Zitto Logo" class="zitto_logo_offcanvas">
+                    </a>
+                </div>
+            </div>
+
+
+
+            <div class="offcanvas-body">
+                <ul class="nav side-navbar flex-column mb-auto">
+
+                    <li class="nav-item">
+                        <a href="{% url 'admin_orders' %}" class="nav-link d-flex d-inline
+                            {% if sub_path == 'main' %}  
+                                active
+                            {% else %}
+    
+                            {% endif %}
+                        ">
+                            <div class="me-2">
+                                <i class="fas fa-tachometer-alt"></i>
+                            </div>
+    
+                            <div class="d-block">
+                                Orders dashboard
+                            </div>
+                        </a>
+                    </li>
+    
+                    <li class="nav-item">
+                        <a href="{% url 'admin_orders_to_review' %}" class="nav-link d-flex d-inline
+                            {% if sub_path == 'orders_to_review' %}  
+                                active
+                            {% else %}
+    
+                            {% endif %}
+                        ">
+                            <div class="me-2">
+                                <i class="fas fa-search"></i>
+                            </div>
+    
+                            <div class="d-block">
+                                Orders to review
+                            </div>
+
+                            {% if orders_under_review %}
+                                <span class="badge bg-danger ms-auto">{{ orders_under_review|length }}</span>
+                            {% endif %}
+                        </a>
+                    </li>
+    
+                    <li class="nav-item">
+                        <a href="{% url 'admin_payment_pending' %}" class="nav-link d-flex d-inline
+                            {% if sub_path == 'payment_pending' %}  
+                                active
+                            {% else %}
+    
+                            {% endif %}
+                        ">
+                            <div class="rotate_180 me-2">
+                                <i class="fas fa-money-bill-wave-alt"></i>
+                            </div>
+                            <div class="d-block">
+                                Payment pending
+                            </div>
+
+                            {% if orders_payment_pending %}
+                                <span class="badge bg-danger ms-auto">{{ orders_payment_pending|length }}</span>
+                            {% endif %}
+                        </a>
+                    </li>
+    
+                    <li class="nav-item">
+                        <a href="{% url 'admin_items_to_purchase' %}" class="nav-link d-flex d-inline
+                            {% if sub_path == 'items_to_purchase' %}  
+                                active
+                            {% else %}
+    
+                            {% endif %}
+                        ">
+                            <div class="me-2">
+                                <i class="fas fa-store"></i>
+                            </div>
+
+                            <div class="d-block">
+                                Items to purchase
+                            </div>
+
+                            {% if items_to_purchase %}
+                                <span class="badge bg-danger ms-auto">{{ items_to_purchase|length }}</span>
+                            {% endif %}
+                        </a>
+                    </li>
+    
+                    <li class="nav-item">
+                        <a href="{% url 'admin_purchased_orders' %}" class="nav-link d-flex d-inline
+                            {% if sub_path == 'purchased_orders' %}  
+                                active
+                            {% else %}
+    
+                            {% endif %}
+                        ">
+                            <div class="me-2">
+                                <i class="fas fa-store"></i>
+                            </div>
+
+                            <div class="d-block">
+                                Purchased orders
+                            </div>
+
+                            {% if purchased_orders %}
+                                <span class="badge bg-danger ms-auto">{{ purchased_orders|length }}</span>
+                            {% endif %}
+                        </a>
+                    </li>
+    
+                    <li class="nav-item">
+                        <a href="{% url 'admin_ready_to_ship' %}" class="nav-link d-flex d-inline
+                            {% if sub_path == 'ready_to_ship' %}  
+                                active
+                            {% else %}
+    
+                            {% endif %}
+                        ">
+                            <div class="me-2">
+                                <i class="fas fa-truck-loading"></i>
+                            </div>
+
+                            <div class="d-block">
+                                Ready to ship
+                            </div>
+
+                            {% if orders_ready_to_ship %}
+                                <span class="badge bg-danger ms-auto">{{ orders_ready_to_ship|length }}</span>
+                            {% endif %}
+                        </a>
+                    </li>
+    
+                    <li class="nav-item">
+    
+                        <a href="{% url 'admin_batches' %}" class="nav-link d-flex d-inline
+                            {% if sub_path == 'batches' %}  
+                                active
+                            {% else %}
+    
+                            {% endif %}
+                        ">
+                            <div class="me-2">
+                                <i class="fas fa-ship"></i>
+                            </div>
+    
+                            <div class="d-block">
+                                Batches
+                            </div>
+
+                            {% if batches_created_it %}
+                                <span class="badge bg-danger ms-auto">{{ batches_created_it|length }}</span>
+                            {% endif %}
+                        </a>
+                    </li>
+    
+    
+    
+                    <li class="nav-item">
+    
+                        <a href="{% url 'admin_completed_batches' %}" class="nav-link d-flex d-inline
+                            {% if sub_path == 'completed_shipments' %}  
+                                active
+                            {% else %}
+    
+                            {% endif %}
+                        ">
+                            <div class="me-2">
+                                <i class="fas fa-ship"></i>
+                            </div>
+    
+                            <div class="d-block">
+                                Completed batches
+                            </div>
+
+                            {% if completed_batches %}
+                                <span class="badge bg-success ms-auto">{{ completed_batches|length }}</span>
+                            {% endif %}
+                        </a>
+                    </li>
+    
+                    <li class="nav-item">
+    
+                        <a href="{% url 'admin_landed' %}" class="nav-link d-flex d-inline
+                            {% if sub_path == 'landed' %}  
+                                active
+                            {% else %}
+    
+                            {% endif %}
+                        ">
+                            <div class="flip-horizontally  me-2">
+                                <i class="fas fa-truck-loading"></i>
+                            </div>
+    
+                            <div class="d-block">
+                                Landed orders
+                            </div>
+
+                            {% if orders_landed %}
+                                <span class="badge bg-danger ms-auto">{{ orders_landed|length }}</span>
+                            {% endif %}
+                        </a>
+                    </li>
+    
+                    <li class="nav-item">
+    
+                        <a href="{% url 'admin_ready_for_delivered' %}" class="nav-link d-flex d-inline
+                            {% if sub_path == 'ready_for_delivered' %}  
+                                active
+                            {% else %}
+    
+                            {% endif %}
+                        ">
+                            <div class="me-2">
+                                <i class="fas fa-people-carry"></i>
+                            </div>
+    
+                            <div class="d-block">
+                                Ready for delivery
+                            </div>
+
+                            {% if orders_ready_for_delivery %}
+                                <span class="badge bg-danger ms-auto">{{ orders_ready_for_delivery|length }}</span>
+                            {% endif %}
+                        </a>
+                    </li>
+    
+                    <li class="nav-item">
+    
+                        <a href="{% url 'admin_delivered' %}" class="nav-link d-flex d-inline
+                            {% if sub_path == 'delivered' %}  
+                                active
+                            {% else %}
+    
+                            {% endif %}
+                        ">
+                            <div class="me-2">
+                                <i class="fas fa-parachute-box"></i>
+                            </div>
+    
+                            <div class="d-block">
+                                Delivered orders
+                            </div>
+
+                            {% if orders_delivered %}
+                                <span class="badge bg-success ms-auto">{{ orders_delivered|length }}</span>
+                            {% endif %}
+                        </a>
+                    </li>
+    
+                    <li class="nav-item">
+                        <a href="{% url 'admin_rejected_orders' %}" class="nav-link d-flex d-inline
+                            {% if sub_path == 'rejected_orders' %}  
+                                active
+                            {% else %}
+    
+                            {% endif %}
+                        ">
+                            <div class="me-2">
+                                <i class="fas fa-times"></i>
+                            </div>
+    
+                            <div class="d-block">
+                                Rejected orders
+                            </div>
+
+                            {% if rejected_orders %}
+                                <span class="badge bg-danger ms-auto">{{ rejected_orders|length }}</span>
+                            {% endif %}
+                        </a>
+                    </li>
+                </ul>
+            </div>
+          </div>
+
+        <div class="col-12 col-sm-12 col-md-9 col-xl-10">
+            {% block my_account_content %}
+
+            {% endblock %}
+        </div>
+
+    </div>
+</div>
+
+
+
+
+{% endblock %}
+    
+
+

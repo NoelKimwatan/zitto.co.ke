@@ -1,0 +1,216 @@
+{% extends 'service/base_my_orders.html' %}
+{% load humanize %}
+
+{% block my_orders_content %}
+    <div class="row mt-2">
+
+        <div class="col-12 col-md-4 col-xl-2 my-2">
+            <div class="card card_one">
+                <div class="card-body"> 
+                    <a class="d-flex text-white stretched-link card_link" href="{% url 'orders_under_review' %}" >
+
+                        <div class="d-inline">
+                            Under Review
+                        </div>
+
+                        <div class="d-inline ms-auto d-block d-md-none">
+                            {% if orders_under_review %}
+                                <span class="badge bg-secondary ms-2">{{ orders_under_review|length }}</span>
+                            {% endif %}
+                        </div>
+                    </a>
+                </div>
+
+                <div class="card-footer d-flex align-items-center justify-content-between d-flex d-none d-md-block">
+                    <a class="small text-white stretched-link card_link d-flex" href="{% url 'orders_under_review' %}">
+
+                        <div class="d-inline">
+                            View Details
+                        </div>
+
+                        <div class="d-inline">
+                            {% if orders_under_review %}
+                                <span class="badge bg-secondary ms-2">{{ orders_under_review|length }}</span>
+                            {% endif %}
+                        </div>
+
+                        <div class="small text-white ms-auto d-inline d-flex align-items-center">
+                            <i class="fas fa-angle-right"></i>
+                        </div>
+
+                    </a>
+
+                </div>
+
+            </div>
+        </div>
+
+        <div class="col-12 col-md-4 col-xl-2 my-2">
+            <div class="card card_five">
+                <div class="card-body"> 
+                    <a class="d-flex text-white stretched-link card_link d-flex" href="{% url 'action_required' %}" >
+                        <div class="d-inline">
+                            Action Required
+                        </div>
+                        <div class="d-inline ms-auto d-block d-md-none">
+                            {% if orders_action_required %}
+                                <span class="badge bg-secondary ms-2">{{ orders_action_required|length }}</span>
+                            {% endif %}
+                        </div>
+                    </a>
+                </div>
+
+                <div class="card-footer d-flex align-items-center justify-content-between d-flex d-none d-md-block">
+                    <a class="small text-white stretched-link card_link d-flex" href="{% url 'action_required' %}">
+
+                        <div class="d-inline">
+                            View Details
+                        </div>
+
+                        <div class="d-inline">
+                            {% if orders_action_required %}
+                                <span class="badge bg-secondary ms-2">{{ orders_action_required|length }}</span>
+                            {% endif %}
+                        </div>
+
+                        <div class="small text-white ms-auto d-inline d-flex align-items-center">
+                            <i class="fas fa-angle-right"></i>
+                        </div>
+
+                    </a>
+
+                </div>
+
+            </div>
+        </div>
+
+        <div class="col-12 col-md-4 col-xl-2 my-2">
+            <div class="card card_four">
+                <div class="card-body"> 
+                    <a class="d-flex text-white stretched-link card_link" href="{% url 'orders' %}" >
+
+                        <div class="d-inline">
+                            Orders
+                        </div>
+
+                        <div class="d-inline ms-auto d-block d-md-none">
+                            {% if orders_orders %}
+                                <span class="badge bg-secondary ms-2">{{ orders_orders|length }}</span>
+                            {% endif %}
+                        </div>
+                    </a>
+                </div>
+
+                <div class="card-footer d-flex align-items-center justify-content-between d-flex d-none d-md-block">
+                    <a class="small text-white stretched-link card_link d-flex" href="{% url 'orders' %}">
+
+                        <div class="d-inline">
+                            View Details
+                        </div>
+
+                        <div class="d-inline">
+                            {% if orders_orders %}
+                                <span class="badge bg-secondary ms-2">{{ orders_orders|length }}</span>
+                            {% endif %}
+                        </div>
+
+                        <div class="small text-white ms-auto d-inline d-flex align-items-center">
+                            <i class="fas fa-angle-right"></i>
+                        </div>
+
+                    </a>
+
+                </div>
+
+            </div>
+        </div>
+
+        <div class="col-12 col-md-4 col-xl-2 my-2">
+            <div class="card card_two">
+                <div class="card-body"> 
+                    <a class="d-flex text-white stretched-link card_link" href="{% url 'ready_for_delivery' %}" >
+
+                        <div class="d-inline">
+                            Ready For Delivery
+                        </div>
+
+                        <div class="d-inline ms-auto d-block d-md-none">
+                            {% if orders_ready_for_delivery %}
+                                <span class="badge bg-secondary ms-2">{{ orders_ready_for_delivery|length }}</span>
+                            {% endif %}
+                        </div>
+                    </a>
+                </div>
+
+                <div class="card-footer d-flex align-items-center justify-content-between d-flex d-none d-md-block">
+                    <a class="small text-white stretched-link card_link d-flex" href="{% url 'ready_for_delivery' %}">
+
+                        <div class="d-inline">
+                            View Details
+                        </div>
+
+                        <div class="d-inline">
+                            {% if orders_ready_for_delivery %}
+                                <span class="badge bg-secondary ms-2">{{ orders_ready_for_delivery|length }}</span>
+                            {% endif %}
+                        </div>
+
+                        <div class="small text-white ms-auto d-inline d-flex align-items-center">
+                            <i class="fas fa-angle-right"></i>
+                        </div>
+
+                    </a>
+
+                </div>
+
+            </div>
+        </div>
+
+        <div class="col-12 col-md-4 col-xl-2 my-2">
+            <div class="card card_three">
+                <div class="card-body"> 
+                    <a class="d-flex text-white stretched-link card_link" href="{% url 'delivered' %}" >
+
+                        <div class="d-inline">
+                            Delivered
+                        </div>
+
+                        <div class="d-inline ms-auto d-block d-md-none">
+                            {% if orders_delivered %}
+                                <span class="badge bg-secondary ms-2">{{ orders_delivered|length }}</span>
+                            {% endif %}
+                        </div>
+                    </a>
+                </div>
+
+                <div class="card-footer d-flex align-items-center justify-content-between d-flex d-none d-md-block">
+                    <a class="small text-white stretched-link card_link d-flex" href="{% url 'delivered' %}">
+
+                        <div class="d-inline">
+                            View Details
+                        </div>
+
+                        <div class="d-inline">
+                            {% if orders_delivered %}
+                                <span class="badge bg-secondary ms-2">{{ orders_delivered|length }}</span>
+                            {% endif %}
+                        </div>
+
+                        <div class="small text-white ms-auto d-inline d-flex align-items-center">
+                            <i class="fas fa-angle-right"></i>
+                        </div>
+
+                    </a>
+
+                </div>
+
+            </div>
+        </div>
+
+
+    </div>
+
+
+
+{% endblock %}
+

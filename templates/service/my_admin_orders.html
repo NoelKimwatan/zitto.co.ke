@@ -1,0 +1,461 @@
+{% extends "service/base_my_admin_orders.html" %}
+{% load humanize %}
+
+{% block my_account_content %}
+    {% if sufficient_permission %}
+        <div class="row mt-4">
+
+            <div class="col-12 col-md-4 col-xl-3 my-2">
+                <div class="card card_one text-white">
+                    <div class="card-body">
+                        <a class="d-flex text-white stretched-link card_link" href="{% url 'admin_orders_to_review' %}">
+                            <div class="d-inline">
+                                <i class="fas fa-search me-1"></i>
+                                Orders to review                  
+                            </div>
+    
+                            <div class="d-inline ms-auto d-block d-md-none">
+                                {% if orders_under_review %}
+                                    <span class="badge bg-secondary ms-2">{{ orders_under_review|length }}</span>
+                                {% endif %}
+                            </div>
+                        </a>
+                    </div>
+
+                    <div class="card-footer d-flex align-items-center justify-content-between d-flex d-none d-md-block">
+                        <a class="small text-white stretched-link card_link d-flex" href="{% url 'admin_orders_to_review' %}">
+
+                            <div class="d-inline">
+                                View Details
+                            </div>
+
+                            <div class="d-inline">
+                                {% if  orders_under_review %}
+                                    <span class="badge bg-danger ms-2">{{ orders_under_review|length }}</span>
+                                {% endif %}
+                            </div>
+
+                            <div class="small text-white ms-auto d-inline d-flex align-items-center ">
+                                <i class="fas fa-angle-right"></i>
+                            </div>
+                        </a>
+                        
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="col-12 col-md-4 col-xl-3 my-2">
+                <div class="card card_one text-white">
+                    <div class="card-body">
+                        <a class="d-flex text-white stretched-link card_link" href="{% url 'admin_payment_pending' %}" >
+                            <div class="d-inline">
+                                <i class="fas fa-money-bill-wave-alt me-1"></i>
+                                Payment pending
+                            </div>
+    
+                            <div class="d-inline ms-auto d-block d-md-none">
+                                {% if orders_payment_pending %}
+                                    <span class="badge bg-secondary ms-2">{{ orders_payment_pending|length }}</span>
+                                {% endif %}
+                            </div>
+                        </a>
+                    </div>
+
+                    <div class="card-footer d-flex align-items-center justify-content-between d-flex d-none d-md-block">
+                        <a class="small text-white stretched-link card_link d-flex" href="{% url 'admin_payment_pending' %}">
+                            <div class="d-inline">
+                                View Details
+                            </div>
+
+                            <div class="d-inline">
+                                {% if  orders_payment_pending %}
+                                    <span class="badge bg-danger ms-2">{{ orders_payment_pending|length }}</span>
+                                {% endif %}
+                            </div>
+
+                            <div class="small text-white ms-auto d-inline d-flex align-items-center ">
+                                <i class="fas fa-angle-right"></i>
+                            </div>
+                        </a>
+                        
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="col-12 col-md-4 col-xl-3 my-2">
+                <div class="card card_one text-white">
+                    <div class="card-body">
+                        <a class="d-flex text-white stretched-link card_link" href="{% url 'admin_items_to_purchase' %}">
+                            <div class=" d-flex d-inline">
+                                <div class="me-0 me-md-2">
+                                    <i class="fas fa-store me-1"></i>
+                                </div>
+                                Items to purchase                    
+                            </div>
+    
+                            <div class="d-inline ms-auto d-block d-md-none">
+                                {% if items_to_purchase %}
+                                    <span class="badge bg-secondary ms-2">{{ items_to_purchase|length }}</span>
+                                {% endif %}
+                            </div>
+                        </a>
+                    </div>
+
+                    <div class="card-footer d-flex align-items-center justify-content-between d-flex d-none d-md-block">
+                        <a class="small text-white stretched-link card_link d-flex" href="{% url 'admin_items_to_purchase' %}">
+                            <div class="d-inline">
+                                View Details
+                            </div>
+                            
+                            <div class="d-inline">
+                                {% if  items_to_purchase %}
+                                    <span class="badge bg-danger ms-2">{{ items_to_purchase|length }}</span>
+                                {% endif %}
+                            </div>
+
+                            <div class="small text-white ms-auto d-inline d-flex align-items-center ">
+                                <i class="fas fa-angle-right"></i>
+                            </div>
+                        </a>
+                        
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="col-12 col-md-4 col-xl-3 my-2">
+                <div class="card card_one text-white">
+                    <div class="card-body">
+                        <a class="d-flex text-white stretched-link card_link" href="{% url 'admin_purchased_orders' %}">
+                            <div class=" d-flex d-inline">
+                                <div class="me-0 me-md-2">
+                                    <i class="fas fa-store me-1"></i>
+                                </div>
+                                Purchased orders
+                            </div>
+    
+                            <div class="d-inline ms-auto d-block d-md-none">
+                                {% if purchased_orders %}
+                                    <span class="badge bg-secondary ms-2">{{ purchased_orders|length }}</span>
+                                {% endif %}
+                            </div>
+                        </a>
+                    </div>
+
+                    <div class="card-footer d-flex align-items-center justify-content-between d-flex d-none d-md-block">
+                        <a class="small text-white stretched-link card_link d-flex" href="{% url 'admin_purchased_orders' %}">
+                            <div class="d-inline">
+                                View Details
+                            </div>
+                            
+                            <div class="d-inline">
+                                {% if purchased_orders %}
+                                    <span class="badge bg-danger ms-2">{{ purchased_orders|length }}</span>
+                                {% endif %}
+                            </div>
+
+                            <div class="small text-white ms-auto d-inline d-flex align-items-center ">
+                                <i class="fas fa-angle-right"></i>
+                            </div>
+                        </a>
+                        
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="col-12 col-md-4 col-xl-3 my-2">
+                <div class="card card_one text-white">
+                    <div class="card-body">
+                        <a class="d-flex text-white stretched-link card_link" href="{% url 'admin_ready_to_ship' %}">
+                            <div class=" d-flex d-inline">
+                                <div class="me-0 me-md-2">
+                                    <i class="fas fa-truck-loading me-1"></i>
+                                </div>
+                                Ready to ship                        
+                            </div>
+    
+                            <div class="d-inline ms-auto d-block d-md-none">
+                                {% if orders_ready_to_ship %}
+                                    <span class="badge bg-secondary ms-2">{{ orders_ready_to_ship|length }}</span>
+                                {% endif %}
+                            </div>
+                        </a>
+                    </div>
+
+                    <div class="card-footer d-flex align-items-center justify-content-between d-flex d-none d-md-block">
+                        <a class="small text-white stretched-link card_link d-flex" href="{% url 'admin_ready_to_ship' %}">
+                            <div class="d-inline">
+                                View Details
+                            </div>
+                            
+                            <div class="d-inline">
+                                {% if orders_ready_to_ship %}
+                                    <span class="badge bg-danger ms-2">{{ orders_ready_to_ship|length }}</span>
+                                {% endif %}
+                            </div>
+
+                            <div class="small text-white ms-auto d-inline d-flex align-items-center ">
+                                <i class="fas fa-angle-right"></i>
+                            </div>
+                        </a>
+                        
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="col-12 col-md-4 col-xl-3 my-2">
+                <div class="card card_two text-white">
+                    <div class="card-body">
+                        <a class="d-flex text-white stretched-link card_link" href="{% url 'admin_batches' %}">
+                            <div class="d-inline">
+                                <i class="fas fa-ship me-1"></i>
+                                Batches 
+                            </div>
+    
+                            <div class="d-inline ms-auto d-block d-md-none">
+                                {% if batches_created_it %}
+                                    <span class="badge bg-secondary ms-2">{{ batches_created_it|length }}</span>
+                                {% endif %}
+                            </div>
+                        </a>
+                    </div>
+
+                    <div class="card-footer d-flex align-items-center justify-content-between d-flex d-none d-md-block">
+                        <a class="small text-white stretched-link card_link d-flex" href="{% url 'admin_batches' %}">
+                            <div class="d-inline">
+                                View Details
+                            </div>
+
+                            <div class="d-inline">
+                                {% if  batches_created_it %}
+                                    <span class="badge bg-danger ms-2">{{ batches_created_it|length }}</span>
+                                {% endif %}
+                            </div>
+
+                            <div class="small text-white ms-auto d-inline d-flex align-items-center ">
+                                <i class="fas fa-angle-right"></i>
+                            </div>
+                        </a>
+                        
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="col-12 col-md-4 col-xl-3 my-2">
+                <div class="card card_two text-white">
+                    <div class="card-body">
+                        <a class="d-flex text-white stretched-link card_link" href="{% url 'admin_completed_batches' %}">
+                            <div class="d-inline" >
+                                <i class="fas fa-ship me-1"></i>
+                                Completed batches 
+                            </div>
+    
+                            <div class="d-inline ms-auto d-block d-md-none">
+                                {% if completed_batches %}
+                                    <span class="badge bg-secondary ms-2">{{ completed_batches|length }}</span>
+                                {% endif %}
+                            </div>
+                        </a>
+                    </div>
+
+                    <div class="card-footer d-flex align-items-center justify-content-between d-flex d-none d-md-block">
+                        <a class="small text-white stretched-link card_link d-flex" href="{% url 'admin_completed_batches' %}">
+                            <div class="d-inline">
+                                View Details
+                            </div>
+
+                            <div class="d-inline">
+                                {% if  completed_batches %}
+                                    <span class="badge bg-danger ms-2">{{ completed_batches|length }}</span>
+                                {% endif %}
+                            </div>
+
+
+                            <div class="small text-white ms-auto d-inline d-flex align-items-center ">
+                                <i class="fas fa-angle-right"></i>
+                            </div>
+                        </a>
+                        
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="col-12 col-md-4 col-xl-3 my-2">
+                <div class="card card_two text-white">
+                    <div class="card-body">
+                        <a class="d-flex text-white stretched-link card_link" href="{% url 'admin_landed' %}" >
+                            <div class="d-flex d-inline">
+                                <div class="flip-horizontally  me-2">
+                                    <i class="fas fa-truck-loading me-1"></i>
+                                </div>
+                                Landed orders  
+                            </div>
+    
+                            <div class="d-inline ms-auto d-block d-md-none">
+                                {% if orders_landed %}
+                                    <span class="badge bg-secondary ms-2">{{ orders_landed|length }}</span>
+                                {% endif %}
+                            </div>
+                        </a>
+                    </div>
+
+                    <div class="card-footer d-flex align-items-center justify-content-between d-flex d-none d-md-block">
+                        <a class="small text-white stretched-link card_link d-flex" href="{% url 'admin_landed' %}">
+                            <div class="d-inline">
+                                View Details
+                            </div>
+
+                            <div class="d-inline">
+                                {% if orders_landed %}
+                                    <span class="badge bg-danger ms-2">{{ orders_landed|length }}</span>
+                                {% endif %}
+                            </div>
+
+                            <div class="small text-white ms-auto d-inline d-flex align-items-center ">
+                                <i class="fas fa-angle-right"></i>
+                            </div>
+                        </a>
+                        
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="col-12 col-md-4 col-xl-3 my-2">
+                <div class="card card_three text-white">
+                    <div class="card-body">
+                        <a class="d-flex text-white stretched-link card_link" href="{% url 'admin_ready_for_delivered' %}" >
+                            <div class="d-inline">
+                                <i class="fas fa-people-carry me-1"></i>
+                                Ready for delivery 
+                            </div>
+                            <div class="d-inline ms-auto d-block d-md-none">
+                                {% if orders_ready_for_delivery %}
+                                    <span class="badge bg-secondary ms-2">{{ orders_ready_for_delivery|length }}</span>
+                                {% endif %}
+                            </div>
+                        </a>
+                    </div>
+
+                    <div class="card-footer d-flex align-items-center justify-content-between d-flex d-none d-md-block">
+                        <a class="small text-white stretched-link card_link d-flex" href="{% url 'admin_ready_for_delivered' %}">
+                            <div class="d-inline">
+                                View Details
+                            </div>
+                            
+                            <div class="d-inline">
+                                {% if  orders_ready_for_delivery %}
+                                    <span class="badge bg-danger ms-2">{{ orders_ready_for_delivery|length }}</span>
+                                {% endif %}
+                            </div>
+
+                            <div class="small text-white ms-auto d-inline d-flex align-items-center ">
+                                <i class="fas fa-angle-right"></i>
+                            </div>
+                        </a>
+                        
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="col-12 col-md-4 col-xl-3 my-2">
+                <div class="card card_three text-white">
+                    <div class="card-body">
+                        <a class="d-flex text-white stretched-link card_link" href="{% url 'admin_delivered' %}" >
+                            <div class="d-inline">
+                                <i class="fas fa-parachute-box me-1"></i>
+                                Delivered orders 
+                            </div>
+                            <div class="d-inline ms-auto d-block d-md-none">
+                                {% if orders_delivered %}
+                                    <span class="badge bg-secondary ms-2">{{ orders_delivered|length }}</span>
+                                {% endif %}
+                            </div>
+                        </a>
+                    </div>
+
+                    <div class="card-footer d-flex align-items-center justify-content-between d-flex d-none d-md-block">
+                        <a class="small text-white stretched-link card_link d-flex" href="{% url 'admin_delivered' %}">
+                            <div class="d-inline">
+                                View Details
+                            </div>
+                            
+                            <div class="d-inline">
+                                {% if  orders_delivered %}
+                                    <span class="badge bg-danger ms-2">{{ orders_delivered|length }}</span>
+                                {% endif %}
+                            </div>
+
+                            <div class="small text-white ms-auto d-inline d-flex align-items-center ">
+                                <i class="fas fa-angle-right"></i>
+                            </div>
+                        </a>
+                        
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="col-12 col-md-4 col-xl-3 my-2">
+                <div class="card card_five text-white">
+                    <div class="card-body">
+                        <a class="d-flex text-white stretched-link card_link" href="{% url 'admin_rejected_orders' %}" >
+                            <div class="d-inline">
+                                <i class="fas fa-times"></i>
+                                Rejected orders 
+                            </div>
+                            <div class="d-inline ms-auto d-block d-md-none">
+                                {% if rejected_orders %}
+                                    <span class="badge bg-secondary ms-2">{{ rejected_orders|length }}</span>
+                                {% endif %}
+                            </div>
+                        </a>
+                    </div>
+
+                    <div class="card-footer d-flex align-items-center justify-content-between d-flex d-none d-md-block">
+                        <a class="small text-white stretched-link card_link d-flex" href="{% url 'admin_rejected_orders' %}">
+                            <div class="d-inline">
+                                View Details
+                            </div>
+
+                            
+                            <div class="d-inline">
+                                {% if rejected_orders %}
+                                    <span class="badge bg-secondary ms-2">{{ rejected_orders|length }}</span>
+                                {% endif %}
+                            </div>
+
+                            <div class="small text-white ms-auto d-inline d-flex align-items-center">
+                                <i class="fas fa-angle-right"></i>
+                            </div>
+                        </a>
+                        
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    {% else %}
+        <div class="row">
+            <div class="col">
+                <p class="mt-5 text-center fst-italic">
+                    You have insufficient permissions
+                </p>
+            </div>
+        </div>
+    {% endif %}
+
+{% endblock %}
+
+
+
+
+

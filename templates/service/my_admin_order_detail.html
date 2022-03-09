@@ -1,0 +1,438 @@
+{% extends "service/base_my_admin_orders.html" %}
+{% load humanize %}
+
+{% block my_account_content %}
+    {% if sufficient_permission %}
+        <div class="row">
+            <div class="col">
+                
+                <h1 class="text-center my-4">Details</h1>
+                {% if messages %}
+                    {% for message in messages %}
+                        {% if message.level >= 30 %}
+                        <div class="">
+                            <div class="alert alert-danger" role="alert">
+                                {{ message }}
+                            </div>
+                        </div>
+
+                        {% else %}
+                        <div class="">
+                            <div class="alert alert-success" role="alert">
+                                {{ message }}
+                            </div>
+                        </div>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+
+
+                <form method="post" action="{% url 'admin_orders_detail' order.id  %}" class="row my-5">
+                    {% csrf_token %}
+                
+
+                    <div class="col-12">
+                        <div class="card my-2 rounded-0">
+
+                            
+                            <div class="card-body">
+                                <h5 class="card-title mb-5">
+                                    <b>Order Id:</b> {{ order.id }}
+                                </h5>
+
+                                <div class="row">
+                                    <div class="col-12">
+
+                                        <ul class="list-group borderless">
+                                            <li class="list-group-item">
+                                                <span class="prefix "><b>Name:</b></span>
+                                                <span class="label">{{ order.name }} </span>
+                                            </li>
+
+                                            <li class="list-group-item d-flex d-inline ">
+                                                <span class="prefix"><b>Link:</b></span>
+                                                <span class="label limit_length_10 ms-1" id="link_span{{order.id}}">{{ order.link }} </span>
+                                                <button type="button" class="btn btn-secondary btn-sm ms-5 d-flex d-inline align-items-center" onclick="copyToClipboard('link_span{{order.id}}')" >
+                                                    <i class="far fa-clipboard me-1"></i> 
+                                                    <span class="ms-1 d-none d-sm-block">Copy to clipboard</span>
+                                                </button>
+                                            </li>
+
+                                            <li class="list-group-item ">
+                                                <span class="prefix"><b>Description:</b></span>
+                                                <span class="label">{{ order.description }}</span>
+                                            </li>
+        
+                                            <li class="list-group-item">
+                                                <span class="prefix"><b>Status:</b></span>
+                                                {% if order.status == "RJ" %}
+                                                    <span class="label badge bg-danger">{{ order.get_status_display }}</span>
+                                                {% elif order.status == "D" %}
+                                                    <span class="label badge bg-success">{{ order.get_status_display }}</span>
+                                                {% else %}
+                                                    <span class="label badge bg-primary">{{ order.get_status_display }}</span>
+                                                {% endif %}
+                                            </li>
+
+                                            <li class="list-group-item ">
+                                                
+                                                {% if order.status == "R" or order.status == "P" %}
+                                                    <div class="row justify-content-start">
+                                                        <label for="inputShipping" class="col-sm-6 col-md-3 col-lg-2 col-form-label">
+                                                            <b>Tracking Number:</b>
+                                                        </label>
+
+                                                    
+                                                        <div class="col-sm-6 col-md-4 col-lg-3" >
+                                                            <div class="input-group ">
+                                                                <input type="text" name="trackingNumber" class="form-control" id="inputTrackingNumber" placeholder="Enter tracking number" value="{{ order.tracking_number|default_if_none:'' }}" required >
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                {% else %}
+                                                    <span class="prefix"><b>Tracking Number:</b></span>
+                                                    <span class="label">{{ order.tracking_number|default_if_none:"" }}</span>
+                                                {% endif %}
+                                                
+                                            </li>
+
+                                            <li class="list-group-item">
+                                                <hr>
+                                            </li>
+
+                                            {% if order.status == "RJ" %}
+                                            <li class="list-group-item ">
+                                                <span class="prefix"><b>Reason for rejection:</b></span>
+                                                <span class="label">{{ order.rejectpaymentrequest.reason }}</span>
+                                            </li>  
+                                            
+                                            <li class="list-group-item">    
+                                                <hr>
+                                            </li>
+                                            {% endif %}
+
+                                            {% if order.status == "IR" %}
+                            
+                                                <li class="list-group-item">
+                                                    <div class="form-group">
+                                                        <div class="row my-2">
+                                                            <label for="inputAmount" class="col-12 col-sm-2 col-md-3 col-form-label">
+                                                                <b>Purchase Amount:</b>
+                                                            </label>
+                
+                                                            <div class="col-12 col-sm-10 col-md-9" >
+                                                                <div class="input-group ">
+                
+                                                                    <div class="d-flex d-inline me-0 me-sm-2 mb-3 mb-xl-0">
+                                                                        <select class="custom-select mr-sm-2 " class="form-control square_corners" id="inlineFormCustomSelect">
+                                                                        <option selected>Currency</option>
+                                                                        <option value="1">USD</option>
+                                                                        <option value="2">AED</option>
+                                                                        <option value="3">GBP</option>
+                                                                        </select>
+                                                                        <input type="number" min="0" name="purchaseAmountOriginalCurrency" step="0.0001" class="form-control square_corners" id="inputPAmount" placeholder="Enter amount " value="{{ order.amount_in_purchase_currency }}" required >
+                                                                    </div>
+                
+                                                                    <div class="d-flex d-inline me-0 me-sm-2 mb-3 mb-lg-0">
+                                                                        <span class="input-group-text square_corners">Exchange Rate</span>
+                                                                        <input type="number" min="0" step="0.0001" name="exchangeRate" class="form-control square_corners" id="inputPExchange" value="{{ order.exchage_rate }}" required >
+                                                                    </div>
+                                                                
+                                                                    <div class="d-block ms-0">
+                                                                        <button type="button" class="btn btn-secondary square_corners btn-sm  me-sm-2" onclick="calculatePAmount()"  >Calculate Amount</button>
+                                                                    </div>
+                
+                                                                    <div class="d-flex d-inline mt-4">
+                                                                        <span class="input-group-text square_corners">Amount in KES</span>
+                                                                        <input type="number" min="0" name="purchaseAmount" class="form-control square_corners" id="inputAmountKES" value="{{ order.amount }}" required >
+                                                                    </div> 
+                
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                
+                                                    </div>                                        
+                                                </li>
+
+                                                <li class="list-group-item">
+                                                    <div class="form-group col-12 my-2 ">
+                                                        <div class="row my-2">
+
+                                                            <label for="inputShipping" class="col-12 col-sm-2 col-md-3 col-form-label">
+                                                                <b>Shipping Estimate</b>
+                                                            </label>
+                                                        
+                                                            <div class="col-12 col-sm-10 col-md-9 col-form-label" >
+                                                                <div class="input-group d-flex d-inline">
+                                                                    <div class="d-flex d-inline me-0 me-sm-2 mb-3 mb-xl-0">
+                                                                        <span class="input-group-text square_corners">Weight</span>
+                                                                        <input class="form-control square_corners" id="weight_value" name="estimatedWeight" type="number" min="0" step="0.0001" placeholder="Kg" value="{{ order.estimated_weight }}" required>
+                                                                    </div>
+                
+                                                                    <div class="d-flex d-inline me-0 me-sm-2 mb-3 mb-xl-0">
+                                                                        <span class="input-group-text square_corners">Price per kg</span>
+                                                                        <input class="form-control square_corners" id="price_per_kg" name="price_per_kg" type="number" min="0" step="0.01" placeholder="KES" value="{{ order.price_per_kg }}" required>
+                                                                    </div>
+                
+                                                                    <div class="d-block">
+                                                                        <button type="button" class="btn btn-secondary btn-sm me-sm-2 square_corners" onclick="calculateShipping()" >Calculate Shipping</button>
+                                                                    </div>
+                
+                                                                    <div class="d-flex d-inline mt-4">
+                                                                        <span class="input-group-text square_corners">Amount in KES</span>
+                                                                        <input type="number" min="0" name="shippingEstimate" id="shipping_value" class="form-control square_corners" value="{{ order.shippingEstimate }}"  required >
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                
+                                                    </div>
+                                                </li>
+                                            {% elif order.status == "DDE" %}
+                                                <li class="list-group-item ">
+                                                    <span class="prefix"><b>Purchase amount:</b></span>
+                                                    <span class="label"> 
+                                                        {% if order.amount %}
+                                                            KES {{ order.amount|intcomma }}
+                                                        {% endif %}
+                                                    </span>
+                                                </li>
+
+                                                <li class="list-group-item">
+                                                    <div class="col-6 ">
+                                                        <span class="prefix"><b>Estimated shipping:</b></span>
+                                                        <span class="label">
+                                                            {% if order.amount %}
+                                                                KES {{ order.shippingEstimate|intcomma }}
+                                                            {% endif %} 
+                                                        </span>
+                                                    </div>
+                                                </li>
+
+                                                <li class="list-group-item">
+                                                    <div class="form-group my-2 ">
+
+                                                        <div class="row my-2">
+                                                            <label for="inputShipping" class="col-sm-2 col-form-label">
+                                                                <b>Actual Shiping</b>
+                                                            </label>
+                                                        
+                                                            <div class="col-sm-10 " >
+                                                                <div class="input-group d-flex d-inline">
+                                                                    <div class="d-flex d-inline me-2 ">
+                                                                        <span class="input-group-text">Weight</span>
+                                                                        <input class="form-control" id="weight_value" type="number" min="0" step="0.0001" placeholder="Kg" value="{{ order.estimated_weight }}" required>
+                                                                    </div>
+                
+                                                                    <div class="d-flex d-inline">
+                                                                        <span class="input-group-text">Price per kg</span>
+                                                                        <input class="form-control" id="price_per_kg" type="number" min="0" step="0.01" placeholder="KES" value="{{ order.price_per_kg }}" required>
+                                                                    </div>
+                
+                                                                    <div class="d-flex d-inline">
+                                                                        <button type="button" class="btn btn-secondary btn-sm mx-2" onclick="calculateShipping()" >Calculate Shipping</button>
+                                                                    </div>
+                
+                                                                    <div class="d-flex d-inline mt-4">
+                                                                        <span class="input-group-text">KES</span>
+                                                                        <input type="number" min="0" name="shipping" id="shipping_value" class="form-control" value="{{ order.shipping }}"  required >
+                                                                    </div>
+                
+                
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                </li>
+
+                                                <li class="list-group-item ">
+                                                    <hr>
+                                                </li>
+
+                                                <h3 class="text-center mt-5">Delivery Details</h3>
+                                                
+                                                <li class="list-group-item ">
+                                                    <span class="prefix"><b>Shipping county:</b></span>
+                                                    <span class="label"> 
+                                                        {{ order.deliverydetails.county }}
+                                                    </span>
+                                                </li>
+
+                                                <li class="list-group-item ">
+                                                    <span class="prefix"><b>Shipping town/location:</b></span>
+                                                    <span class="label"> 
+                                                        {{ order.deliverydetails.town_location }}
+                                                    </span>
+                                                </li>
+
+                                                <li class="list-group-item ">
+                                                    <span class="prefix"><b>Shipping description:</b></span>
+                                                    <span class="label"> 
+                                                        {{ order.deliverydetails.description }}
+                                                    </span>
+                                                </li>
+
+                                                <li class="list-group-item ">
+                                                    <div class="form-group">
+                                                        <div class="row">
+
+                                                            <label for="inputShipping" class="col-sm-2 col-form-label">
+                                                                <b>Shiping Charges</b>
+                                                            </label>
+                                                        
+                                                            <div class="col-sm-10 " >
+                                                                <div class="input-group d-flex d-inline">
+                                                                    <div class="d-flex d-inline me-2 ">
+                                                                        <span class="input-group-text">Amount</span>
+                                                                        <input class="form-control" id="shipping_charge" type="number" min="0" name="delivery_fee" placeholder="KES" value="{{ order.delivery_fee }}" >
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-text">
+                                                                    Please enter 0 for free delivery
+                                                                </div>
+                                                            </div>
+                
+                                                        </div>
+                                                    </div>
+                                                </li>
+
+                                            {% else  %}
+                                                <li class="list-group-item ">
+                                                    <span class="prefix"><b>Purchase amount:</b></span>
+                                                    <span class="label"> 
+                                                        {% if order.amount %}
+                                                            KES {{ order.amount|intcomma }}
+                                                        {% endif %}
+                                                    </span>
+                                                </li>
+
+                                                <li class="list-group-item">
+                                                    <div class="row">
+                                                        <div class="col-12 col-sm-6 my-2 my-sm-0">
+                                                            <span class="prefix"><b>Estimated shipping:</b></span>
+                                                            <span class="label">
+                                                                {% if order.amount %}
+                                                                    KES {{ order.shippingEstimate|intcomma }}
+                                                                {% endif %} 
+                                                            </span>
+                                                        </div>
+            
+                                                        <div class="col-12 col-sm-6 my-2 my-sm-0 ">
+                                                            <span class="prefix"><b>Actual shipping:</b></span>
+                                                            <span class="label"> 
+                                                                {% if order.shipping %}
+                                                                    KES {{ order.shipping|intcomma }}
+                                                                {% endif %} 
+                                                            </span>
+                                                        </div>
+            
+                                                    </div>
+                                                </li>
+
+                                                <li class="list-group-item ">
+                                                    <span class="prefix"><b>Delivery fees:</b></span>
+                                                    <span class="label"> 
+                                                        {% if order.shipping %}
+                                                            KES {{ order.delivery_fee|intcomma }}
+                                                        {% endif %} 
+                                                    </span>
+                                                </li>
+                                            {% endif %}
+
+
+                                        </ul>
+
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+                
+
+                    {% if order.status == "IR" %}
+
+                        <div class="row justify-content-center mt-3 mb-5">
+                            <div class="col-12 col-md-5 text-center">
+                                <input type="submit" name="submit"  class="btn btn-lg color_button mx-3 my-2" value="Save">
+                                <input type="submit" name="submit" class="btn btn-lg color_button mx-3 my-2" value="Submit Review">
+                            </div>
+                        </div>
+
+                    {% elif order.status == "DDE" %}
+
+                        <div class="row justify-content-center mt-3 mb-5">
+                            <div class="col-12 col-md-5 text-center">
+                                <input type="submit" name="submit"  class="btn btn-lg color_button mx-3" value="Save">
+                                <input type="submit" name="submit" class="btn btn-lg color_button mx-3" value="Set shipping and delivery">
+                            </div>
+                        </div>
+
+                    {% elif order.status == "R" or "P" %}
+
+                        <div class="row justify-content-center mt-3 mb-5">
+                            <div class="col-12 col-md-5 text-center">
+                                <input type="submit" name="submit"  class="btn btn-lg color_button mx-3" value="Save Tracking Number">
+                            </div>
+                        </div>
+
+                    {% endif %}
+
+                </form>
+
+                {% for item in order_items %}
+                    <div class="modal fade" id="add_item_to_shipment{{item.id}}">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">Add to Shipment</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+
+                                <form method="post" action="{% url 'add_to_shipment' %}">
+                                    {% csrf_token %}
+                                    <input type="text" name="procedure" class="form-control" value="order_item" hidden>
+                                    <input type="text" name="item" class="form-control" value="{{ item.id }}" hidden>
+                                    <div class="modal-body">
+                                        <select class="form-select" name="selected_shipment" aria-label="Default select example">
+                                            <option selected>Please select one</option>
+                                                {% for shipment in shipments %}
+                                                <option  value="{{ shipment.id }}">{{ shipment }}</option>
+                                                {% endfor %}
+                                        </select>
+                                    </div>
+
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                        <button type="submit" class="btn btn-primary">Save changes</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+
+                <input class="clipboard hidden">
+
+            </div>
+        </div>
+    {% else %}
+        <div class="row">
+            <div class="col">
+                <p class="mt-5 text-center fst-italic">
+                    You have insufficient permissions
+                </p>
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}
+
+
+
+
+

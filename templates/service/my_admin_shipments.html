@@ -1,0 +1,189 @@
+
+{% extends "service/base_my_admin_orders.html" %}
+{% load humanize %}
+
+
+{% block my_account_content %}
+    {% if sufficient_permission %}
+        <div class="row my-5 ">
+            <div class="col">
+
+                <h1 class="text-center mb-5">{{ header}}</h1>
+
+                {% if messages %}
+                    {% for message in messages %}
+                        {% if message.level >= 30 %}
+                            <div class="alert alert-danger" role="alert">
+                                {{ message }}
+                            </div>
+                        {% else %}
+                            <div class="alert alert-success" role="alert">
+                                {{ message }}
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+
+
+                <div class="row">
+                    {% if sub_path == "batches" %}
+                        <div class="col d-flex justify-content-end">
+                            <button type="button" class="me-0 me-md-2 btn btn-success mb-3" data-bs-toggle="modal" data-bs-target="#createShippmentModal">Create Batch</button>
+                        </div>
+                    {% else %}
+                    {% endif %}
+
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th scope="col">Batch Number</th>
+                                <th scope="col">Name</th>
+                                <th scope="col">Date Created</th>
+                                <th scope="col">Status</th>
+                                {% if batches.0.status == "C" %}
+                                <th scope="col">Date Completed</th>
+                                {% else %}
+                                <th scope="col"></th>
+                                {% endif %}
+                                <th scope="col"></th>
+                                
+                                
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for batch in batches reversed %}
+                                <tr>
+                                    <td>{{ batch.batch_number }}</td>
+                                    <td>{{ batch.name }}</td>
+                                    <td>{{ batch.date_created|date:"d-m-Y" }}</td>
+                                    <td>{{ batch.batchtimeline.get_status_display }}</td>
+        
+                                    {% if batch.status == "C" %}
+                                        <td> {{ batch.date_completed }} </td>
+
+                                        <td>
+                                            <a href="{% url 'admin_shipments_detail' batch.id %}" class="btn btn-sm btn-outline-dark mx-2">View</a>
+                                        </td>
+                                    {% else %}
+                                        <td>
+                                            <a type="button" class="btn btn-outline-dark mx-2 btn-sm" data-bs-toggle="modal" data-bs-target="#update_batch_status{{batch.id}}" >Update status</a>
+                                        </td>
+                                    
+                                        <td>
+                                            <a href="{% url 'admin_shipments_detail' batch.id %}" class="btn btn-sm btn-outline-dark mx-2">View</a>
+                                        </td>
+                                    {% endif %}
+
+                                    
+                                </tr>
+        
+                                <div class="modal fade" id="update_batch_status{{batch.id}}" tabindex="-1" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLabel">Update status</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <form method="post" action="{% url 'admin_batches' %}">
+                                            {% csrf_token %}
+                                            <input type="text" name="shipment_id" class="form-control" value="{{ batch.id }}" hidden>
+                                            <div class="modal-body">
+        
+                                                <div class="mt-1 mb-2">
+                                                    Update status
+                                                
+                                                
+        
+                                                <select class="form-select mb-5" name="selected_shipment" required>
+                                                    
+                                                        
+                                                        {% for key,status in status_options.items %}
+                                                            {% if batch.batchtimeline.status == key %}
+                                                                <option selected  value="{{ key }}">{{ status }}</option>
+                                                            {% else %}
+                                                                <option  value="{{ key }}">{{ status }}</option>
+                                                            {% endif %}
+                                                        {% endfor %}
+        
+        
+                                                </select>
+        
+                                
+        
+        
+        
+                                            </div>
+        
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                <button type="submit" class="btn btn-primary">Save changes</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                    </div>
+                                </div>
+        
+        
+                            {% endfor %}
+        
+                
+                
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="modal fade" id="createShippmentModal">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="staticBackdropLabel">Create Batch</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                            <form method="post" action="{% url 'admin_ready_to_ship' %}">
+                                {% csrf_token %}
+                                <div class="modal-body">
+                                    
+                                        <input type="hidden" name="page_source"  value="batches" >
+
+                                        <div class="mb-3">
+                                            <label for="shippmentName" class="form-label">Batch Name</label>
+                                            <input type="text" name="shippmentName" class="form-control" id="shippmentName">
+                                            <div id="emailHelp" class="form-text">Please enter a description of the shippment.</div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="batchNumber" class="form-label">Batch Number</label>
+                                            <input type="text" name="batchNumber" class="form-control" id="batchNumber">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="shippmentDescription" class="form-label">Description</label>
+                                            <textarea class="form-control" name="description" id="shippmentDescription" rows="3"></textarea>
+                                        </div>
+                                </div>
+
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-success ms-auto">Create</button>
+                                </div>
+
+                            </form>
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    {% else %}
+        <div class="row">
+            <div class="col">
+                <p class="mt-5 text-center fst-italic">
+                    You have insufficient permissions
+                </p>
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}

@@ -1,0 +1,493 @@
+{% extends "service/base_my_orders.html" %}
+{% load humanize %}
+
+
+{% block my_orders_content %}
+    <div class="row">
+       
+            
+        <h1 class="text-center my-4">Details</h1>
+
+        {% if message %}
+            <div class="alert alert-primary" role="alert">
+                {{ message }}
+            </div>
+        {% else %}
+
+        {% endif %}
+
+
+        <form method="post" action="{% url 'admin_orders_detail' order.id  %}" class="row">
+            {% csrf_token %}
+        
+            <div class="col-12">
+                <div class="card my-2 rounded-0">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-12">
+                                <h5 class="card-title mb-5 me-auto">
+                                    <b>Order Id:</b> {{ order.id }}
+                                </h5>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12 col-md-8">
+
+                                <ul class="list-group borderless">
+                                    <li class="list-group-item ">
+                                        <span class="prefix "><b>Name:</b></span>
+                                        <span class="label">{{ order.name }} </span>
+                                    </li>
+
+                                    <li class="list-group-item d-flex d-inline ">
+                                        <span class="prefix"><b>Link:</b></span>
+                                        <span class="label limit_length_10 ms-1">{{ order.link }} </span>
+                                        <button type="button" class="btn btn-secondary btn-sm ms-5 d-flex d-inline align-items-center" onclick="copyToClipboard('link_span{{order.id}}')" >
+                                            <i class="far fa-clipboard me-1"></i> 
+                                            <span class="ms-1 d-none d-xl-block">Copy to clipboard</span>
+                                        </button>
+                                    </li>
+
+                                    <li class="list-group-item ">
+                                        <span class="prefix"><b>Description:</b></span>
+                                        <span class="label">{{ order.description }}</span>
+                                    </li>
+
+                                    <li class="list-group-item ">
+                                        <span class="prefix"><b>Status:</b></span>
+                                        <span class="label">
+                                            {{ order.get_status_display }}
+                                        </span>
+                                    </li>
+
+                                    <li class="list-group-item ">
+                                        <hr>
+                                    </li>
+
+                                    {% if order.status == "PP" or order.status == "SPP" or order.status == "LD" %}
+                                        <li class="list-group-item d-flex d-inline">
+                                            <span class="prefix"><b>Action:</b></span>
+                                            <span class="label ">
+                                                
+                                                    {% if order.status == "PP" %}
+                                                        <button type="button" class="btn btn-success btn-sm ms-2" data-bs-toggle="modal" data-bs-target="#approve_purchase_payment_modal" >
+                                                            Approve Purchase Payment
+                                                        </button>
+        
+                                                        <button type="button" class="btn btn-danger btn-sm ms-2" data-bs-toggle="modal" data-bs-target="#reject_payment_request">
+                                                            Reject order
+                                                        </button>
+                                                    {% elif order.status == "LD" %}
+                                                        <button type="button" class="btn btn-success btn-sm ms-2" data-bs-toggle="modal" data-bs-target="#enter_delivery_details_modal">
+                                                            Enter delivery details
+                                                        </button>
+                                                    {% elif order.status == "SPP" %}
+                                                        <button type="button" class="btn btn-success btn-sm ms-2" data-bs-toggle="modal" data-bs-target="#approve_shipping_payment_modal" >
+                                                            Approve shipping and delivery fees
+                                                        </button>
+                                                    {% endif %}
+                                            </span>
+                                        </li>  
+                                        <li class="list-group-item ">
+                                            <hr>
+                                        </li>                                 
+                                    {% endif %}
+
+                                    {% if order.status == "I" or order.status == "IR" %}  
+                                        <li class="list-group-item">
+                                            <span class="prefix"><b>Purchase Amount:</b></span>
+                                            <span class="label">Under Review</span>
+                                        </li>
+                                        <li class="list-group-item">
+                                            <span class="prefix"><b>Estimated Shipping:</b></span>
+                                            <span class="label label-success">Under Review</span>
+                                        </li>
+                                        {% elif order.status == "RD" or order.status == "D" %}
+                                        <li class="list-group-item">
+                                            <span class="prefix"><b>Purchase Amount:</b></span>
+                                            <span class="label">KES {{ order.amount|default_if_none:""|intcomma }}</span>
+                                        </li>
+
+                                        <li class="list-group-item ">
+                                            <div class="row">
+                                                <div class="col-6 ">
+                                                    <span class="prefix"><b>Estimated shipping:</b></span>
+                                                    <span class="label">
+                                                        {% if order.amount %}
+                                                            KES {{ order.shippingEstimate|intcomma }}
+                                                        {% endif %} 
+                                                    </span>
+                                                </div>
+    
+                                                <div class="col-6">
+                                                    <span class="prefix"><b>Actual shipping:</b></span>
+                                                    <span class="label"> 
+                                                        {% if order.shipping %}
+                                                            KES {{ order.shipping|intcomma }}
+                                                        {% endif %} 
+                                                    </span>
+                                                </div>
+    
+                                            </div>
+                                        </li>
+
+                                        <li class="list-group-item">
+                                            <span class="prefix"><b>Delivery fee:</b></span>
+                                            <span class="label">
+                                                {% if order.delivery_fee == 0 %}
+                                                    Free delivery
+                                                {% elif order.delivery_fee != 0 %}
+                                                    KES {{ order.delivery_fee|default_if_none:""|intcomma }}
+                                                {% else %}
+                                                {% endif %}
+                                                
+                                            </span>
+                                        </li>
+                                        
+                                        <li class="list-group-item">
+                                            
+                                        </li>
+
+                                        <li class="list-group-item">
+                                            <span class="prefix"><b>Order total:</b></span>
+                                            <span class="label">
+                                                KES {{ order.get_order_total|intcomma }}
+                                            </span>
+                                        </li>
+                                    {% elif order.status == "SPP"  %}
+                                        <li class="list-group-item">
+                                            <span class="prefix"><b>Actual Total:</b></span>
+                                            <span class="label">KES {{ order.get_order_total|intcomma }}</span>
+                                        </li>
+                                        <li class="list-group-item">
+                                            <span class="prefix"><b>Purchase Amount:</b></span>
+                                            <span class="label label-success">KES {{ order.amount|intcomma  }}</span>
+                                        </li>
+                                        <li class="list-group-item">
+                                            <span class="prefix"><b>Actual Shipping:</b></span>
+                                            <span class="label label-success">KES {{ order.shipping|intcomma }}</span>
+                                        </li>
+                                        <li class="list-group-item">
+                                            <span class="prefix"><b>Delivery fees:</b></span>
+                                            <span class="label label-success">KES {{ order.delivery_fee|intcomma }}</span>
+                                        </li>
+                                    {% else %}
+                                        <li class="list-group-item">
+                                            <span class="prefix"><b>Purchase Amount:</b></span>
+                                            <span class="label">KES {{ order.amount|default_if_none:""|intcomma }}</span>
+                                        </li>
+                                        <li class="list-group-item">
+                                            <span class="prefix"><b>Estimated Shipping:</b></span>
+                                            <span class="label label-success">KES {{ order.shippingEstimate|default_if_none:""|intcomma }}</span>
+                                        </li>
+
+                                    {% endif %}
+                                </ul>
+                            </div>
+
+                            <div class="col-12 col-md-4">
+                                <div class="row d-flex justify-content-center mt-5 mt-md-0 ">
+                                    <div class="col">
+                                    
+                                        <h5 class="card-title ">Order Timeline</h5>
+                                        
+
+
+                                        <div class="vertical-timeline vertical-timeline--animate vertical-timeline--one-column ">
+                                   
+                                            {% if order.ordertimeline.ship_request_created %}
+                                                <div class="vertical-timeline-item vertical-timeline-element">
+                                                    <div> <span class="vertical-timeline-element-icon bounce-in"><i class="badge badge-dot badge-dot-xl badge-primary"> </i> </span>
+                                                        <div class="vertical-timeline-element-content bounce-in">
+                                                            <h4 class="timeline-title">Ship request created</h4>
+                                                            <span class="vertical-timeline-element-date">{{ order.ordertimeline.ship_request_created|date:"d M Y" }}</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+
+
+                                            {% if order.ordertimeline.item_purchased %}
+                                                <div class="vertical-timeline-item vertical-timeline-element">
+                                                    <div> <span class="vertical-timeline-element-icon bounce-in"><i class="badge badge-dot badge-dot-xl badge-primary"> </i> </span>
+                                                        <div class="vertical-timeline-element-content bounce-in">
+                                                            <h4 class="timeline-title">Item purchased</h4>
+                                                            <span class="vertical-timeline-element-date">{{ order.ordertimeline.item_purchased|date:"d M Y" }}</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+                                            
+                                            {% if order.ordertimeline.received_at_warehouse %}
+                                                <div class="vertical-timeline-item vertical-timeline-element">
+                                                    <div> <span class="vertical-timeline-element-icon bounce-in"><i class="badge badge-dot badge-dot-xl badge-primary"> </i> </span>
+                                                        <div class="vertical-timeline-element-content bounce-in">
+                                                            <h4 class="timeline-title">Received at warehouse</h4>
+                                                            <span class="vertical-timeline-element-date">{{ order.ordertimeline.received_at_warehouse|date:"d M Y" }}</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+
+                                            {% if order.ordertimeline.departed_from_warehouse %}
+                                                <div class="vertical-timeline-item vertical-timeline-element">
+                                                    <div> <span class="vertical-timeline-element-icon bounce-in"> <i class="badge badge-dot badge-dot-xl badge-primary"> </i> </span>
+                                                        <div class="vertical-timeline-element-content bounce-in">
+                                                            <h4 class="timeline-title">Departed from warehouse</h4>
+                                                            <span class="vertical-timeline-element-date">{{ order.ordertimeline.departed_from_warehouse|date:"d M Y" }}</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+                                            {% if order.ordertimeline.arrived_at_destination_airport %}
+                                                <div class="vertical-timeline-item vertical-timeline-element">
+                                                    <div> <span class="vertical-timeline-element-icon bounce-in"> <i class="badge badge-dot badge-dot-xl badge-primary"> </i> </span>
+                                                        <div class="vertical-timeline-element-content bounce-in">
+                                                            <h4 class="timeline-title ">Arrived at destination airport</h4>
+                                                            <span class="vertical-timeline-element-date">{{ order.ordertimeline.arrived_at_destination_airport|date:"d M Y" }}</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+
+                                            {% if order.ordertimeline.package_being_prepared_for_delivery %}
+                                                <div class="vertical-timeline-item vertical-timeline-element">
+                                                    <div> <span class="vertical-timeline-element-icon bounce-in"> <i class="badge badge-dot badge-dot-xl badge-primary"> </i> </span>
+                                                        <div class="vertical-timeline-element-content bounce-in">
+                                                            <h4 class="timeline-title">Package being prepared for delivery</h4>
+                                                            <span class="vertical-timeline-element-date">{{ order.ordertimeline.package_being_prepared_for_delivery|date:"d M Y" }}</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+
+                                            {% if order.ordertimeline.delivered %}
+                                                <div class="vertical-timeline-item vertical-timeline-element">
+                                                    <div> <span class="vertical-timeline-element-icon bounce-in"> <i class="badge badge-dot badge-dot-xl badge-primary"> </i> </span>
+                                                        <div class="vertical-timeline-element-content bounce-in">
+                                                            <h4 class="timeline-title text-success">Delivered</h4>
+                                                            <span class="vertical-timeline-element-date">{{ order.ordertimeline.delivered|date:"d M Y" }}</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                           
+                                      
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+
+
+
+                    </div>
+                </div>
+            </div>
+
+
+
+        </form>
+
+     
+
+
+        <div class="row justify-content-center my-5">
+            <div class="col-12 col-md-5 text-center">
+                <a type="button" onclick="goBack()" class="btn color_button mx-3">
+                    Back
+                </a>
+            </div>
+        </div>
+        
+        <input class="clipboard hidden">
+    </div>
+
+    <div class="modal fade" id="enter_delivery_details_modal">
+        <form method="post" action="{% url 'enter_delivery_details'  order.id %}">
+            {% csrf_token %}
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Delivery details</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+
+                    <div class="modal-body">
+                        Please enter the delivery details for the order <b>{{ order.name }}.</b>  
+                        Please note delivery may attarct a small <b>delivery fee</b> depending on the delivery location
+                        
+                        <div class="mb-3 mt-3">
+                            <label for="county" class="form-label">County</label>
+                            <input type="text" class="form-control" id="county" name="county" value="{{ order.deliverydetails.county }}" required>
+                            <div id="emailHelp" class="form-text">Please enter the county e.g Nairobi</div>
+                        </div>
+
+
+                        <div class="mb-3">
+                            <label for="town/location" class="form-label">Town/Location</label>
+                            <input type="text" class="form-control" id="town/location" name="town/location" value="{{ order.deliverydetails.town_location }}" required>
+                            <div id="emailHelp" class="form-text">Please enter the town or location e.g Kilimani</div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Description</label>
+                            <textarea class="form-control" id="description" rows="3" name="description" value="{{ order.deliverydetails.description }}"></textarea>
+                            <div id="emailHelp" class="form-text">Please give us any further details or instructions</div>
+                            </div>
+
+                    
+                    </div>
+
+                    <div class="modal-footer d-flex justify-content-between">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" name="submit" class="btn btn-primary">Save</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div class="modal fade" id="reject_payment_request">
+        <form method="post" action="{% url 'reject_payment'  order.id %}">
+            {% csrf_token %}
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Reject payment request</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Reason</label>
+                            <textarea class="form-control" id="description" rows="3" name="reason"></textarea>
+                            <div id="emailHelp" class="form-text">Its sad that you dont want to proceed with the order, please let us know why</div>
+                        </div>
+
+                    
+                    </div>
+
+                    <div class="modal-footer d-flex justify-content-between">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" name="submit" class="btn btn-primary">Save</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- <div class="modal fade" id="delete_order_item_modal" tabindex="-1"  aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5>Warning</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                Are you sure you want to delete this item ?
+                </div>
+
+                <form method="post" action="{% url 'my_orders_delete_order' order.id %}">
+                    {% csrf_token %}
+                    <div class="modal-footer d-flex justify-content-center">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <input type="submit" name="submit" class="btn btn-primary" value ="Delete Item">
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div> -->
+
+    <div class="modal fade" id="approve_purchase_payment_modal">
+        <form method="post" action="{% url 'approve_payment'  order.id %}">
+            {% csrf_token %}
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content"> 
+                    <div class="modal-header  text-center">
+                        <h5 class="modal-title text-center">
+                            <b>
+                                Approve Payment
+                            </b>
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+
+                    <div class="modal-body">
+                        <p>You are about to approve the purchase payment for: </p> 
+                        <p class="text-center text_theme_color_mix fw-bolder">
+                                <b>{{ order.name }}</b>
+                                <br/>
+                                <b>KES {{ order.amount|intcomma }}</b>
+                        </p>
+                        
+
+                        <p> 
+                            The amount will be deducted from your wallet. <br/> <br/>
+                            <b>Please note you will be required to pay shipment costs before delivery.</b>
+                        </p>
+                        
+                        
+
+                        
+                    </div>
+
+                    <div class="modal-footer d-flex justify-content-between">
+                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" name="submit" class="btn btn-success">Approve Payment</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div class="modal fade" id="approve_shipping_payment_modal">
+        <form method="post" action="{% url 'approve_payment'  order.id %}">
+            {% csrf_token %}
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content"> 
+                    <div class="modal-header  text-center">
+                        <h5 class="modal-title text-center">
+                            <b>
+                                Approve Payment
+                            </b>
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+
+                    <div class="modal-body">
+                        <p>You are about to approve the shipping payment for: </p> 
+                        <p class="text-center text_theme_color_mix fw-bolder">
+                                <b>{{ order.name }}</b>
+                                <br/>
+                                <b>{{ order.get_order_shipping_and_delivery|intcomma  }}</b>
+                
+                        </p>
+                        
+
+                        <p> 
+                            The amount will be deducted from your wallet. 
+                        </p>
+                        
+                        
+
+                        
+                    </div>
+
+                    <div class="modal-footer d-flex justify-content-between">
+                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" name="submit" class="btn btn-success">Approve Payment</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+{% endblock %}
+
+
+
+
+

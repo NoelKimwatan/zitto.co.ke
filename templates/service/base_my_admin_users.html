@@ -1,0 +1,240 @@
+{% extends "service/base_admin.html" %}
+{% load static %}
+{% load humanize %}
+
+{% block content %}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col ">
+            <div class="navbar-color px-0 d-block d-md-none"> 
+                <button class="btn" type="button" data-bs-toggle="offcanvas" data-bs-target="#navbar_offcanvas" >
+                    <i class="fas fa-bars"></i> 
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="row vh_60">
+
+        <div class="col-2 col-md-3 col-xl-2 navbar-color px-0 d-none d-md-block">
+            <ul class="nav side-navbar flex-column mb-auto">
+
+                <li class="nav-item">
+                    <a href="{% url 'admin_users' %}" class="nav-link d-flex d-inline
+                        {% if sub_path == 'main' %}  
+                            active
+                        {% else %}
+
+                        {% endif %}
+                    ">
+                        <div class="me-0 me-md-2">
+                            <i class="fas fa-users"></i>
+                        </div>
+
+                        <div class="d-block">
+                            All users
+                        </div>
+                        {% if all_users %}
+                            <span class="badge bg-secondary ms-auto">{{ all_users|length }}</span>
+                        {% endif %}
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a href="{% url 'admin_staff_users' %}" class="nav-link d-flex d-inline
+                        {% if sub_path == 'staff_users' %}  
+                            active
+                        {% else %}
+
+                        {% endif %}
+                    ">
+                        <div class="me-0 me-md-2">
+                            <i class="fas fa-user-edit"></i>
+                        </div>
+
+                        <div class="d-block">
+                            Staff users
+                        </div>
+
+                        {% if all_staff_users %}
+                            <span class="badge bg-secondary ms-auto">{{ all_staff_users|length }}</span>
+                        {% endif %}
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a href="{% url 'admin_super_users' %}" class="nav-link d-flex d-inline
+                        {% if sub_path == 'super_users' %}  
+                            active
+                        {% else %}
+
+                        {% endif %}
+                    ">
+                        <div class="me-0 me-md-2">
+                            <i class="fas fa-user-shield"></i>
+                        </div>
+
+                        <div class="d-block">
+                            Super users
+                        </div>
+
+                        {% if all_super_users %}
+                            <span class="badge bg-secondary ms-auto">{{ all_super_users|length }}</span>
+                        {% endif %}
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a href="{% url 'admin_managed_users' %}" class="nav-link d-flex d-inline
+                        {% if sub_path == 'managed_users' %}  
+                            active
+                        {% else %}
+
+                        {% endif %}
+                    ">
+
+                        <div class="me-0 me-md-2">
+                            <i class="fas fa-child"></i>
+                        </div>
+
+                        <div class="d-block">
+                            Managed users
+                        </div>
+
+                        {% if all_managed_users %}
+                            <span class="badge bg-secondary ms-auto">{{ all_managed_users|length }}</span>
+                        {% endif %}
+                    </a>
+                </li>
+
+            </ul>
+        </div>
+
+        <div class="offcanvas offcanvas-start navbar-color" data-bs-scroll="false" data-bs-backdrop="true"  id="navbar_offcanvas" >
+
+            <div class="offcanvas-header ">
+                <button type="button" class="btn-close text-reset ms-auto" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            </div>
+
+            <div class="offcanvas-header d-flex justify-content-center">
+                <div class="d-flex justify-content-center">
+                    <a class="navbar-brand" href="{% url 'index' %}">
+                        <img src="{% static 'images/zitto.png' %}" alt="Zitto Logo" class="zitto_logo_offcanvas">
+                    </a>
+                </div>
+            </div>
+
+
+
+            <div class="offcanvas-body">
+                <ul class="nav side-navbar flex-column mb-auto">
+
+                    <li class="nav-item">
+                        <a href="{% url 'admin_users' %}" class="nav-link d-flex d-inline
+                            {% if sub_path == 'main' %}  
+                                active
+                            {% else %}
+    
+                            {% endif %}
+                        ">
+                            <div class="me-2">
+                                <i class="fas fa-users"></i>
+                            </div>
+    
+                            <div class="d-block">
+                                All users  
+                            </div>
+
+                            {% if all_users %}
+                                <span class="badge bg-secondary ms-auto">{{ all_users|length }}</span>
+                            {% endif %}
+                        </a>
+                    </li>
+    
+                    <li class="nav-item">
+                        <a href="{% url 'admin_staff_users' %}" class="nav-link d-flex d-inline
+                            {% if sub_path == 'staff_users' %}  
+                                active
+                            {% else %}
+    
+                            {% endif %}
+                        ">
+                            <div class="me-2">
+                                <i class="fas fa-user-edit"></i>
+                            </div>
+    
+                            <div class="d-block">
+                                Staff users
+                            </div>
+
+                            {% if all_staff_users %}
+                                <span class="badge bg-secondary ms-auto">{{ all_staff_users|length }}</span>
+                            {% endif %}
+                        </a>
+                    </li>
+    
+                    <li class="nav-item">
+                        <a href="{% url 'admin_super_users' %}" class="nav-link d-flex d-inline
+                            {% if sub_path == 'super_users' %}  
+                                active
+                            {% else %}
+    
+                            {% endif %}
+                        ">
+                            <div class="me-2">
+                                <i class="fas fa-user-shield"></i>
+                            </div>
+
+                            <div class="d-block">
+                                Super users
+                            </div>
+
+                            {% if all_super_users %}
+                                <span class="badge bg-secondary ms-auto">{{ all_super_users|length }}</span>
+                            {% endif %}
+                        </a>
+                    </li>
+    
+                    <li class="nav-item">
+                        <a href="{% url 'admin_managed_users' %}" class="nav-link d-flex d-inline
+                            {% if sub_path == 'managed_users' %}  
+                                active
+                            {% else %}
+    
+                            {% endif %}
+                        ">
+                            <div class="me-2">
+                                <i class="fas fa-child"></i>
+                            </div>
+
+                            <div class="d-block">
+                                Managed users
+                            </div>
+
+                            {% if all_managed_users %}
+                                <span class="badge bg-secondary ms-auto">{{ all_managed_users|length }}</span>
+                            {% endif %}
+                        </a>
+                    </li>
+    
+                </ul>
+            </div>
+        </div>
+
+        <div class="col-12 col-sm-12 col-md-9 col-xl-10">
+            {% block my_account_content %}
+
+            {% endblock %}
+        </div>
+
+    </div>
+</div>
+
+
+
+
+{% endblock %}
+    
+
+

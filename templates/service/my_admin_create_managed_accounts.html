@@ -1,0 +1,85 @@
+{% extends "service/base_my_admin_managed_accounts.html" %}
+{% load humanize %}
+
+{% block my_account_content %}
+    {% if sufficient_permission %}
+        <div class="row mt-4 justify-content-center">
+
+            {% if messages %}
+                {% for message in messages %}
+                    {% if message.level >= 30  %}
+                        <div class="alert alert-danger mb-2" role="alert">
+                            {{message}}
+                        </div>
+                    {% else %}
+                        <div class="alert alert-success mb-2" role="alert">
+                            {{message}}
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+
+
+            <div class="col col-md-8 my-5">
+                <form method="post" action="{% url 'admin_create_managed_accounts' %}">
+                    {% csrf_token %}
+                    
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="mb-3">
+                                <label for="first_name" class="form-label">First Name</label>
+                                <input type="text" name="first_name" class="form-control" id="first_name">
+                            </div>
+                        </div>
+
+                        <div class="col-6">
+                            <div class="mb-3">
+                                <label for="last_name" class="form-label">Last Name</label>
+                                <input type="text" name="last_name" class="form-control" id="last_name">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="managed_acc_phone_number" class="form-label">Phone number</label>
+                        <input type="number" name="phone_number" class="form-control" id="managed_acc_phone_number">
+                    </div>
+
+                    <div class="mb-3">
+                    <label for="managed_acc_email" class="form-label">Email address</label>
+                    <input type="email" name="email" class="form-control" id="managed_acc_email">
+                    </div>
+
+                    
+                    <button type="submit" class="btn btn-primary">Create Managed Account</button>
+                    
+                        
+
+
+                    
+
+                </form>
+        
+                
+            </div>
+        
+            
+
+        </div>
+    {% else %}
+        <div class="row">
+            <div class="col">
+                <p class="mt-5 text-center fst-italic">
+                    You have insufficient permissions
+                </p>
+            </div>
+        </div>
+    {% endif %}
+
+
+{% endblock %}
+
+
+
+
+

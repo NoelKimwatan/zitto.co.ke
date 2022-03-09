@@ -1,0 +1,211 @@
+{% extends 'service/base_my_wallet.html' %}
+{% load static %}
+{% load humanize %}
+
+
+{% block my_account_content %}
+    <div class="mt-3">
+        <h1 class="text-center">{{ header }}</h1>
+    </div>
+
+    {% if message %}
+        <div class="alert alert-danger" role="alert">
+            {{ message }}
+        </div>
+    {% else %}
+    
+    {% endif %}
+
+    {% if action == "Withdraw" %}
+
+        <div class="d-flex mt-4">
+
+            <div class="form-check d-inline mx-2">
+                <input class="form-check-input" type="radio" name="paymentOption" id="mpesaPaymentRadio" onchange="showStuff('mpesaPaymentSection')" checked>
+                <label class="form-check-label" for="mpesaPaymentRadio">
+                  Mpesa
+                </label>
+            </div>
+
+            <div class="form-check d-inline mx-2">
+                <input class="form-check-input" type="radio" name="paymentOption" id="cardPaymentRadio" onchange="showStuff('cardPaymentSection')">
+                <label class="form-check-label" for="cardPaymentRadio">
+                  Card
+                </label>
+            </div>
+        </div>
+
+        <div id="mpesaPaymentSection" style="display: block;">
+            <div class="row justify-content-center mt-4">
+                <div class="col-12 col-sm-6">
+                    <form method="post" action="{% url 'withdraw' %}">
+                        {% csrf_token %}
+                        <div class="form-group"> 
+                            <label for="username">
+                                Phone number
+                            </label> 
+                            <input type="text" name="mpesa_number" placeholder="Mpesa Phone Number" required class="form-control "> 
+                        </div>
+        
+                        <div class="form-group mt-3"> 
+                            <label>
+                                Amount
+                            </label>
+                            <input type="number" name="withdraw_amount" placeholder="Amount you would like to withdraw" class="form-control " required>
+                        </div>
+
+                        <input type="hidden" name="withdraw_mode" value="mpesa">
+
+                        <div class="mt-4">
+                            <button type="submit" class="btn color_button">Withdraw</button>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+
+        <div id="cardPaymentSection" style="display: none;">
+
+            <div class="row justify-content-center mt-4">
+                <div class="col-12 col-sm-8 col-md-6">
+                    <input type="hidden" name="withdraw_mode" value="bank">
+
+                </div>
+
+            </div>
+
+        </div>
+    {% elif  action == "Deposit" %}
+
+        <!-- 
+        <button type="button" class="btn btn-default mpesa_button">
+            <img src="{% static 'images/Mpesa_Icon_3.png' %}" class="mpesa_button_image">
+        </button>
+        -->
+
+
+        <div class="d-flex mt-4">
+
+            <div class="form-check d-inline mx-2">
+                <input class="form-check-input" type="radio" name="paymentOption" id="mpesaPaymentRadio" onchange="showStuff('mpesaPaymentSection')" checked>
+                <label class="form-check-label" for="mpesaPaymentRadio">
+                  Mpesa
+                </label>
+            </div>
+
+            <!-- <div class="form-check d-inline mx-2">
+                <input class="form-check-input" type="radio" name="paymentOption" id="cardPaymentRadio" onchange="showStuff('cardPaymentSection')">
+                <label class="form-check-label" for="cardPaymentRadio">
+                  Card
+                </label>
+            </div> -->
+        </div>
+
+        <div id="mpesaPaymentSection" class="mb-5" style="display: block;">
+            <div class="row justify-content-center mt-4">
+                <div class="col-12 col-sm-6">
+                    <form method="post" action="{% url 'deposit' %}">
+                        {% csrf_token %}
+                        <div class="form-group"> 
+                            <label for="username">
+                                Phone number
+                            </label> 
+                            <input type="text" name="mpesa_number" placeholder="Mpesa Phone Number" required class="form-control "> 
+                        </div>
+        
+                        <div class="form-group mt-3"> 
+                            <label for="cardNumber">
+                                Amount
+                            </label>
+                            <input type="number" name="deposit_amount" placeholder="Amount you would like to deposit" class="form-control " required>
+                        </div>
+
+                        <input type="hidden" name="deposit_mode" value="mpesa">
+
+                        <div class="mt-4">
+                            <button type="submit" class="btn btn-outline-dark straight_borders">Deposit</button>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+
+        <div id="cardPaymentSection" style="display: none;">
+
+            <div class="row justify-content-center mt-4">
+                <div class="col-12 col-sm-8 col-md-6">
+                    <form role="form" >
+
+                        <div class="form-group"> 
+                            <label for="username">
+                                Card Owner
+                            </label> 
+                            <input type="text" name="username" placeholder="Card Owner Name" required class="form-control "> 
+                        </div>
+        
+                        <div class="form-group mt-3"> 
+                            <label for="cardNumber">
+                                Card number
+                            </label>
+                            <div class="input-group"> 
+                                <input type="text" name="cardNumber" placeholder="Valid card number" class="form-control " required>
+                                <span class="input-group-text">
+                                    <i class="fab fa-cc-visa mx-1"></i> 
+                                    <i class="fab fa-cc-mastercard mx-1"></i> 
+                                    <i class="fab fa-cc-amex mx-1"></i>
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="row mt-3">
+                            <div class="col-sm-8">
+                                <div class="form-group"> 
+                                    <label>
+                                        <span class="hidden-xs">
+                                            Expiration Date
+                                        </span>
+                                    </label>
+                                    <div class="input-group"> <input type="number" placeholder="MM" name="" class="form-control" required> <input type="number" placeholder="YY" name="" class="form-control" required> 
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="form-group"> 
+                                    <label title="Three digit CV code on the back of your card">
+                                        CVV <i class="fa fa-question-circle d-inline"></i>
+                                    </label> 
+                                    <input type="text" required class="form-control"> 
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group mt-3"> 
+                            <label for="username">
+                                Amount
+                            </label> 
+                            <input type="number" name="username" placeholder="Amount you would like to deposit" required class="form-control "> 
+                        </div>
+
+                        <input type="hidden" name="deposit_mode" value="card">
+
+                        <div class="mt-4" > 
+                            <button type="button" class="btn color_button btn-block "> Confirm Payment </button>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+
+
+
+    {% endif %}
+
+
+
+{% endblock %}

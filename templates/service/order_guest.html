@@ -1,0 +1,226 @@
+{% extends 'service/base.html' %}
+{% load humanize %}
+
+{% block content %}
+
+<div class="container-fluid vh_70">
+    {% if messages %}
+        <div class="container">
+            {% for message in messages %}
+                {% if message.level >= 30  %}
+
+                    <div class="alert alert-danger my-2" role="alert">
+                        {{message}}
+                    </div>
+
+                {% else %}
+                    <div class="alert alert-success my-2" role="alert">
+                        {{message}}
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+    {% endif %}
+
+        {% if page == "Sign_Up" %}
+
+            <div class="row d-flex justify-content-center align-items-center main_body_row mb-5">
+                <div class="col-12 col-md-8">
+
+                    <div class="row justify-content-center">
+                        <div class="col-8">
+                            <h4>Hey {{ first_name }}!  </h4>
+
+                            <P>
+                                Thank you for. Our staff are working on your request and will be in touch
+                                soon. 
+                            </P>
+        
+
+            
+                            <form method="post" action="{% url 'guest_order' %}">
+                                {% csrf_token %}
+                                <input type="hidden" value="{{identifier}}" name="identifier"> 
+                                <input type="hidden" name="value_no" value="3">
+
+                                <div class="row d-flex justify-content-between">
+                                    <div class="col my-2">
+                                        <input type="submit" class="btn btn-outline-dark straight_borders" name="create_account_or_cancel" value="Create Account">
+                                    </div>
+
+                                    <div class="col my-2">
+                                        <input type="submit" class="btn btn-outline-dark straight_borders ms-auto" name="create_account_or_cancel" value="Cancel">
+                                    </div>
+
+                                </div>
+
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 d-none d-md-block col-md-4 ">
+                    <div class="row justify-content-center">
+                        <div class="col-8 ">
+                            <h4 class="my-3 text-center">Existing users login here</h4>
+        
+                            <form method="post" action="{% url 'login' %}" >
+                                {% csrf_token %}
+        
+                                {% if request.GET.next %}
+                                    <input type="hidden" name="next" value="{{ request.GET.next }}">
+                                {% endif %}
+                            
+                                
+        
+                                <div class="mb-3">
+                                <label for="signup_email" class="form-label">Email address</label>
+                                <input type="email" name="email" class="form-control" id="signup_email">
+                                </div>
+        
+                                <div class="mb-3 mt-4">
+                                <label for="password1" class="form-label">Password</label>
+                                <input type="password" name="password" class="form-control" id="password">
+                                </div>
+        
+                                <button type="submit" class="btn btn-outline-dark straight_borders">Log in</button>
+                                
+                                    
+                                <div class="row mt-5">
+                                    <div class="col text-center">
+                                        Dont have an account ? <a class="signup_login_redirect_two" href="{% url 'signup' %}">Sign up here</a>
+                                    </div>
+                                </div>
+        
+                                
+        
+                            </form>
+                        </div>
+        
+                    </div>
+        
+                </div>
+
+            </div>
+        
+        {% else %}
+            <div class="row d-flex justify-content-center align-items-center main_body_row mb-5">
+                <div class="col-12 col-md-8">
+                    <div class="row justify-content-center">
+                        <div class="col-12 col-md-10">
+                            <form class="" method="post" action="{% url 'guest_order' %}">
+                                {% csrf_token %}
+                
+                                <input type="hidden" value="{{ identifier }}" name="identifier"> 
+                
+                                <input type="hidden" name="value_no" value="2">
+                
+                                <h3 class="">
+                                    To help us serve you better please enter your:
+                                </h3>
+                
+                                <div class="form-group row my-4">
+                                    <div class="col-6">
+                                        <div class="row">
+                                            <label for="guest_order_f_name" class="col-sm-4 col-form-label">First Name</label>
+                                            <div class="col-sm-8">
+                                                <input type="text"  class="form-control" name="guest_order_f_name" id="guest_order_f_name" value="">
+                                            </div>
+                                        </div>
+                                    </div>
+                
+                                    <div class="col-6">
+                                        <div class="row">
+                                            <label for="guest_order_l_name" class="col-sm-4 col-form-label">Last Name</label>
+                                            <div class="col-sm-8">
+                                                <input type="text"  class="form-control" name="guest_order_l_name" id="guest_order_l_name" value="">
+                                            </div>
+                                        </div>
+                                    </div>
+                
+                
+                                </div>
+                
+                                <div class="form-group row my-4">
+                                    <label for="guest_order_phone_no" class="col-sm-2 col-form-label">Phone Number</label>
+                                    <div class="col-sm-10">
+                                        <input type="number"  class="form-control" name="guest_order_phone_no" id="guest_order_phone_no" value="">
+                                    </div>
+                                </div>
+                
+                                <div class="form-group row my-4">
+                                    <label for="guest_order_email" class="col-sm-2 col-form-label">Email</label>
+                                    <div class="col-sm-10">
+                                        <input type="text"  class="form-control" name="guest_order_email" id="guest_order_email" value="">
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-3 form-check">
+                                    <input type="checkbox" class="form-check-input" id="terms_and-conditions" required>
+                                    <label class="form-check-label" for="terms_and">
+                                        I agree to all of Zitto's <a href="{% url 'terms_and_conditions' %}" class="nothing_to_view_admin_and_customer_link">terms and conditions</a>
+                                    </label>
+                                </div>
+                
+                                <div class="row ">
+                                    <div class="col d-flex justify-content-end">
+                                        <input type="submit" class="btn btn-outline-dark straight_borders ms-auto" name="submit" value="Next">
+                                    </div>
+                                </div>
+                                
+                            </form>
+                        </div>
+        
+                    </div>
+                </div>
+        
+                <div class="col-12 d-none d-md-block col-md-4 ">
+                    <div class="row justify-content-center">
+                        <div class="col-8 ">
+                            <h4 class="my-3 text-center">Existing users login here</h4>
+        
+                            <form method="post" action="{% url 'login' %}" >
+                                {% csrf_token %}
+        
+                                {% if request.GET.next %}
+                                    <input type="hidden" name="next" value="{{ request.GET.next }}">
+                                {% endif %}
+                            
+                                
+        
+                                <div class="mb-3">
+                                <label for="signup_email" class="form-label">Email address</label>
+                                <input type="email" name="email" class="form-control" id="signup_email">
+                                </div>
+        
+                                <div class="mb-3 mt-4">
+                                <label for="password1" class="form-label">Password</label>
+                                <input type="password" name="password" class="form-control" id="password">
+                                </div>
+        
+                                <button type="submit" class="btn btn-light">Log in</button>
+                                
+                                    
+                                <div class="row mt-5">
+                                    <div class="col text-center">
+                                        Dont have an account ? <a class="signup_login_redirect_two" href="{% url 'signup' %}">Sign up here</a>
+                                    </div>
+                                </div>
+        
+                                
+        
+                            </form>
+                        </div>
+        
+                    </div>
+        
+                </div>
+        
+            </div>
+        {% endif %}
+</div>
+
+{% endblock %}
+
+
+

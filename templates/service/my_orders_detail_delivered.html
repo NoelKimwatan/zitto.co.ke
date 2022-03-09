@@ -1,0 +1,250 @@
+
+{% extends "service/base_my_orders.html" %}
+{% load humanize %}
+
+
+
+
+{% block my_orders_content %}
+    <div class="row my-5 ">
+        <div class="col">
+
+            
+  
+            {% if orders %}
+                <h1 class="text-center mb-5">{{ header}}</h1>
+
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th scope="col"></th>
+                                <th scope="col">Name</th>
+                                <th scope="col">Date Ordered</th>
+                                <th scope="col">Purchase Amount</th>
+                                <th scope="col">Actual Shipping</th>
+                                <th scope="col">Delivery Fees</th>
+                                <th scope="col">Tracking Number</th>
+                                <th scope="col">Date Completed</th>
+                                <th scope="col"></th>
+                
+                
+                        
+                            
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for order in orders reversed %}
+                                <tr>
+                                    <th scope="row">{{ forloop.counter }}</th>
+                                    <td>{{ order.name }}</td>
+                                    <td>{{ order.date_ordered|date:"d M Y" }}</td>
+                                    
+                                    
+                                    <td> 
+                                        {% if order.status == "IR" %}
+                                            Under review
+                                        {% elif order.amount %}
+                                            KES {{ order.amount|intcomma }}
+                                        {% endif %}                                  
+                                    </td>
+        
+                                    <td>
+                                        {% if order.status == "IR" %}
+                                            Under review
+                                        {% elif order.shipping %}
+                                            KES {{ order.shipping|intcomma }}
+                                        {% endif %}
+                                    </td>
+
+                                    <td>
+                                        {% if order.status == "IR" %}
+                                            Under review
+                                        {% elif order.delivery_fee %}
+                                            KES {{ order.delivery_fee|intcomma }}
+                                        {% elif order.delivery_fee == 0 %}
+                                            Free delivery
+                                        {% endif %}
+                                    </td>
+
+                                    <td>
+                                        {{ order.tracking_number }}
+                                    </td>
+        
+                                    <td>
+                                        {{ order.date_completed|date:"d-m-Y" }}
+                                    </td>
+        
+                                    <td>
+                            
+                                        <a type="button" href="{% url 'my_orders_detail' order.id %}" class="btn btn-outline-dark btn-sm">View</a>
+                                    </td>
+        
+        
+        
+        
+                                    <!-- <td>
+                                        {% if order.status == "LD" %}
+                                            <button type="submit" name="submit" class="btn btn-outline-success btn-sm" data-bs-toggle="modal" data-bs-target="#enter_delivery_details_modal{{order.id}}">
+                                                Enter delivery details
+                                            </button>
+                                        {% elif order.status == "PP" %}
+                                            <button type="submit" name="submit" class="btn btn-outline-success btn-sm" data-bs-toggle="modal" data-bs-target="#approve_purchase_payment_modal{{order.id}}">
+                                                <i class="fas fa-store me-1"></i>
+                                                Approve Purchase Payment
+                                            </button>
+                                        {% elif order.status == "SPP" %}
+                                        
+                                            <button type="submit" name="submit" class="btn btn-outline-success btn-sm" data-bs-toggle="modal" data-bs-target="#approve_purchase_payment_modal{{order.id}}">
+                                                <i class="fas fa-ship me-1"></i>
+                                                Approve Shipping Payment
+                                            </button>
+                                        {% elif order.status == "D" %}
+                                        <button type="submit" name="submit" class="btn btn-outline-dark btn-sm" data-bs-toggle="modal" data-bs-target="#provide_feedback">
+                                            <i class="fas fa-comment-alt"></i>
+                                            Feedback
+                                        </button>
+                                        {% endif %}
+                                    </td> -->
+                                    
+                                </tr>
+        
+                                <!-- <form method="post" action="{% url 'enter_delivery_details'  order.id %}">
+                                    {% csrf_token %}
+                                    <div class="modal fade" id="enter_delivery_details_modal{{order.id}}">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="exampleModalLabel">Delivery details</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+        
+                                                <div class="modal-body">
+                                                    Please enter the delivery details for the order <b>{{ order.name }}.</b> 
+                                                    <div class="mb-3 mt-3">
+                                                        <label for="county" class="form-label">County</label>
+                                                        <input type="text" class="form-control" id="county" name="county">
+                                                        <div id="emailHelp" class="form-text">Please enter the county e.g Nairobi</div>
+                                                    </div>
+        
+        
+                                                    <div class="mb-3">
+                                                        <label for="town/location" class="form-label">Town/Location</label>
+                                                        <input type="text" class="form-control" id="town/location" name="town/location">
+                                                        <div id="emailHelp" class="form-text">Please enter the town or location e.g Kilimani</div>
+                                                    </div>
+        
+                                                    <div class="mb-3">
+                                                        <label for="description" class="form-label">Description</label>
+                                                        <textarea class="form-control" id="description" rows="3" name="description"></textarea>
+                                                        <div id="emailHelp" class="form-text">Please give us any further details or instructions</div>
+                                                    </div>
+        
+                                                
+                                                </div>
+        
+                                                <div class="modal-footer d-flex justify-content-between">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                    <button type="submit" name="submit" class="btn btn-primary">Approve Payment</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+        
+                                <form method="post" action="{% url 'approve_payment'  order.id %}">
+                                    {% csrf_token %}
+                                    <div class="modal fade" id="approve_purchase_payment_modal{{order.id}}">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="exampleModalLabel">Approve Payment</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+        
+                                                <div class="modal-body">
+                                                    You are about to approve the purchase payment for <b>{{ order.name }}.</b> <br/> <br/> <b>KES {{ order.amount }}</b> 
+                                                    will be deducted from your wallet.<br/> <br>
+        
+                                                    <b>Please note you will be required to pay shipment costs before delivery</b>
+                                                </div>
+        
+                                                <div class="modal-footer d-flex justify-content-between">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                    <button type="submit" name="submit" class="btn btn-primary">Approve Payment</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+        
+                                <form method="post" action="{% url 'approve_payment'  order.id %}">
+                                    {% csrf_token %}
+                                    <div class="modal fade" id="approve_shipping_payment_modal">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="exampleModalLabel">Approve Payment</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+        
+                                                <div class="modal-body">
+                                                    You are about to approve the payment for {{ order.name }}. <br/> <br/> <b>KES {{ order.shipping }}</b> 
+                                                    will be deducted from your wallet
+                                                </div>
+        
+                                                <div class="modal-footer d-flex justify-content-between">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                    <button type="submit" name="submit" class="btn btn-primary">Approve Payment</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form> -->
+        
+                                <form method="post" action="{% url 'provide_feedback'  order.id %}">
+                                    {% csrf_token %}
+                                    <div class="modal fade" id="provide_feedback">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="exampleModalLabel">Feedback</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+        
+                                                <div class="modal-body">
+                                                    Hi there <b>{{ order.customer.name }}!</b>
+                                                    Thank you for choosing zitto. We would love to get your feedback<br/>
+                                                    <div class="form-group">
+                                                        <textarea class="form-control" name="feedback"  rows="3"></textarea>
+                                                    </div>
+                                                    
+                                                </div>
+        
+                                                <div class="modal-footer d-flex justify-content-between">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                    <button type="submit" name="submit" class="btn btn-primary">Submit</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+        
+        
+                            {% endfor %}
+        
+                
+                
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <p class="text-center fst-italic mt-3">You currently dont have any items to view. 
+                    <a href="{% url 'order' %}" class="nothing_to_view_admin_and_customer_link">Create a ship request</a>
+                </p>
+            {% endif %}
+
+        </div>
+
+    </div>
+{% endblock %}

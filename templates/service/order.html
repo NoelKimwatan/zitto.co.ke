@@ -1,0 +1,57 @@
+{% extends 'service/base.html' %}
+{% load humanize %}
+
+{% block content %}
+
+<div class="container vh_70">
+
+    <section>
+        <div class="container">
+            <div class="row d-flex justify-content-center align-items-center main_body_row mb-5">
+                <div class="col-12 col-md-8">
+                    
+                    {% if message %}
+                        <div class="alert alert-primary" role="alert">
+                            {{ message }}
+                        </div>
+                    {% endif %}
+    
+                    <form class="" method="post" action="{% url 'order' %}">
+                        {% csrf_token %}
+
+                        <div class="mb-3">
+                            <label for="name_input" class="form-label">Product name</label>
+                            <input type="text" class="form-control" id="name_input" name="name" required>
+                            <div id="linkhelp" class="form-text">Please enter a name e.g laptop</div>
+                        </div> 
+
+                        <div class="mb-3">
+                          <label for="link_input" class="form-label">Link</label>
+                          <input type="text" class="form-control" id="link_input" name="link" required>
+                          <div id="linkhelp" class="form-text">Please enter a valid link.</div>
+                        </div>
+    
+                        <div class="mb-3">
+                            <label for="linkdescription" class="form-label">Description</label>
+                            <textarea class="form-control" id="linkdescription" rows="7" name="description"></textarea>
+                            <div id="linkdescriptionhelp" class="form-text">Please enter a any relevant description such as color,size e.t.c</div>
+                        </div>
+    
+                       
+    
+                        <input type="submit" class="btn btn-outline-dark straight_borders" name="submit" value="Submit Ship Request">
+                        
+                    </form>
+                </div>
+            </div>
+        </div>
+    
+    
+    </section>
+
+</div>
+
+{% endblock %}
+
+
+

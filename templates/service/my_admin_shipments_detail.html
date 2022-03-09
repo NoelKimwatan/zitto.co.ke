@@ -1,0 +1,148 @@
+
+{% extends "service/base_my_admin_orders.html" %}
+{% load humanize %}
+
+
+{% block my_account_content %}
+    {% if sufficient_permission %}
+        <div class="row my-5 ">
+            <div class="col">
+
+                <h1 class="text-center">Batch Details</h1>
+
+                <div class="row mb-3 mt-3">
+                    <div class="col-12 col-md-4 ms-auto">
+                        <div class="card">
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item">
+                                    <b>Batch Name:</b> {{ shipment }} 
+                                </li>
+                                <li class="list-group-item">
+                                    <b>Batch Number: </b> {{ shipment.batch_number}}
+                                </li>
+                                <li class="list-group-item">
+                                    <b>Data Created:</b> {{ shipment.date_created}}
+                                </li>
+                                <li class="list-group-item">
+                                    <b>Batch Status:</b> {{ shipment.get_status_display}}
+                                </li>
+                                <li class="list-group-item">
+                                    <b>Batch Descriprion:</b> {{ shipment.description }}
+                                </li>
+                            </ul>
+                        </div>
+
+                        {% if shipment.status == "CR" or shipment.status == "IT" %}
+                            <div class="my-2 d-flex ">
+                                <button type="button" class="btn btn-outline-dark ms-auto" data-bs-toggle="modal" data-bs-target="#edit_batch_details_modal">
+                                    Edit Details
+                                </button>
+                            </div>
+                        {% endif %}
+                        
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-striped ">
+                        <thead>
+                            <tr>
+                                <th scope="col">Tracking Number</th>
+                                <th scope="col">Customer Name</th>
+                                <th scope="col">Customer Email</th>
+                                <th scope="col">Order Name</th>
+                                
+
+                                {% if shipment.status == "C" %}
+                                    <th scope="col">Total Amount</th>
+                                {% else %}
+                                    <th scope="col">Estimated Total Amount</th>
+                                {% endif %}
+                                    <th scope="col">Total Amount</th>
+                                {% if shipment.status == "CR" %}
+                                    <th scope="col"></th>
+                                {% endif %}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for order in orders %}
+                                <tr>
+                                    <td>{{ order.tracking_number }}</td>
+                                    <td>{{ order.customer.name }}</td>
+                                    <td>{{ order.customer.email }}</td>
+                                    <td>{{ order.name }}</td>
+                                    {% if shipment.status == "C" %}
+                                    <td>KES {{ order.get_order_total|intcomma }}</td>
+                                    {% else %}
+                                    <td>KES {{ order.get_order_estimated_total|intcomma }}</td>
+                                    {% endif %}
+        
+                                    <td>
+                                        <a class="btn btn-sm btn-outline-dark mx-2 py-2 d-inline " href="{% url 'admin_orders_detail' order.id %}">
+                                            View Order <i class="fas fa-box-open text-center ms-auto"></i>
+                                        </a>
+                                    </td>
+
+                                    {% if shipment.status == "CR" %}
+                                        <td>
+                                            <a href=" {% url 'remove_from_batch' order.id  %} " class="cancel_links">
+                                                <i class="fa fa-times" aria-hidden="true"></i>
+                                            </a>
+                                        </td>
+                                    {% endif %}
+
+                                </tr>
+                            {% endfor %}        
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="modal fade" id="edit_batch_details_modal">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="staticBackdropLabel">Create Batch</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                        <form method="post" action="{% url 'admin_shipments_detail'  shipment.id  %}">
+                            {% csrf_token %}
+                            <div class="modal-body">
+                                
+                                    <div class="mb-3">
+                                        <label for="shippmentName" class="form-label">Batch Name</label>
+                                        <input type="text" name="shippmentName" class="form-control" id="shippmentName" value="{{ shipment.name }}">
+                                        <div id="emailHelp" class="form-text">Please enter a description of the shippment.</div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="batchNumber" class="form-label">Batch Number</label>
+                                        <input type="text" name="batchNumber" class="form-control" id="batchNumber" value="{{ shipment.batch_number }}">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="shippmentDescription" class="form-label">Description</label>
+                                        <textarea class="form-control" name="description" id="shippmentDescription" rows="3">{{ shipment.description }}</textarea>
+                                    </div>
+                            </div>
+
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-primary">Create</button>
+                            </div>
+
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    {% else %}
+        <div class="row">
+            <div class="col">
+                <p class="mt-5 text-center fst-italic">
+                    You have insufficient permissions
+                </p>
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}

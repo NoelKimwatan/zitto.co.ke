@@ -1,0 +1,252 @@
+{% extends "service/base_my_admin_users.html" %}
+{% load humanize %}
+
+
+{% block my_account_content %}
+
+    {% if sufficient_permission %}
+        <div class="row mt-3">
+            <div class="col">
+                
+
+                {% if messages %}
+                {% for message in messages %}
+                    {% if message.level >= 30 %}
+                        <div class="alert alert-danger" role="alert">
+                            {{ message }}
+                        </div>
+                    {% else%}
+                        <div class="alert alert-success" role="alert">
+                            {{ message }}
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+
+            </div>
+        </div>
+
+
+
+        <div class="row">
+            <div class="col-12 col-md-6 d-flex justify-content-center">
+
+                <div class="card mb-4" style="width: 18rem;">
+
+                    <div class="user_icon text-center">
+                        <i class="far fa-user"></i>
+                    </div>
+                    
+                    <div class="card-body">
+
+                        <div>
+                            <b>First Name:</b> {{ user.first_name }}
+                        </div>
+
+                        <div>
+                            <b>Last Name:</b> {{ user.last_name }}
+                        </div>
+
+                        <div>
+                            <b>Email: </b>{{ user.username }}
+                        </div>
+                        <div>
+                            <b>Phone Number: </b>{{ customer.phone_number }}
+                        </div>
+                        <div>
+                            <b>Managaed Account: </b>{{ customer.managed }}
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="col-12 col-md-6">
+
+                {% if user.is_staff and request.user.is_superuser %}
+
+                <div class="d-flex justify-content-center mt-2 my-3">
+                    <button type="button" class="btn btn-primary user_admin_button" data-bs-toggle="modal" data-bs-target="#admin_User_Staff_StateModal">
+                        Remove Staff Privilages <i class="fas fa-user-shield ms-1"></i>
+                    </button>
+                </div>
+
+                {% elif user.customer.managed == True %}
+
+                {% elif user.is_staff == False and  user.is_superuser == False and  request.user.is_superuser %}
+
+                <div class="d-flex justify-content-center mt-2 my-3" data-bs-toggle="modal" data-bs-target="#admin_User_Staff_StateModal">
+                    <button type="button" class="btn btn-primary user_admin_button">
+                        Make Staff User <i class="fas fa-user-edit"></i>
+                    </button>
+                </div>
+
+                {% endif %}
+
+                <div class="d-flex justify-content-center mt-2 my-3" data-bs-toggle="modal" data-bs-target="#admin_User_Send_TextModal">
+                    <button type="button" class="btn btn-primary user_admin_button">
+                        Message <i class="fas fa-sms ms-1"></i> 
+                    </button>
+                </div>
+
+                <div class="d-flex justify-content-center mt-2 my-3" data-bs-toggle="modal" data-bs-target="#admin_User_Send_EmailModal">
+                    <button type="button" class="btn btn-primary user_admin_button">
+                        Email <i class="fas fa-envelope ms-1"></i> 
+                    </button>
+                </div>
+
+
+                <div class="d-flex justify-content-center align-items-center my-5">
+                    <b class="me-1">Wallet Balance:</b>KES {{ wallet.balance }}
+                </div>
+                
+            </div>
+
+            <div class="12">
+                {% if transactions %}
+                    <div class="table-responsive mb-5">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Amount</th>
+                                    <th scope="col">Date</th>
+                                    <th scope="col">Type</th>
+                                    <th scope="col">Reference</th>
+                                    <th scope="col">Payment Mode</th>
+                                </tr>
+                            </thead>
+            
+                            <tbody>
+                                {% for transaction in transactions reversed %}
+                                    <tr>
+                                        <th scope="row">{{ forloop.counter }}</th>
+                                        <td>KES {{ transaction.amount|intcomma }}</td>
+                                        <td>{{ transaction.date|date:"d-m-Y" }}</td>
+                                        <td>{{ transaction.get_type_display }}</td>
+                                        <td>{{ transaction.reference }}</td>
+                                        <td>{{ transaction.get_payment_mode_display }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <p class="mt-5 mb-5 text-center fst-italic">
+                        User has no transactions to view 
+                    </p>
+                {% endif %}
+
+            </div>
+
+            <div class="modal fade" id="admin_User_Staff_StateModal" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Warning!!</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+
+                        <form action="{% url 'admin_users_details' user.id %}" method="post">
+                            {% csrf_token %}
+                            <input name="admin_user_modal" value="change_state" hidden>
+                            <div class="modal-body">
+                                {% if user.is_staff %}
+                                    Are you sure you want to remove staff privilages of <b>{{ customer.name }}</b> 
+                                    
+                                {% else %}
+        
+                                    Are you sure you want to make <b>{{ customer.name }}</b> a staff user
+        
+                                {% endif %}
+                                
+                            </div>
+        
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">No</button>
+                                <button type="submit" class="btn btn-success">Yes</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal fade" id="admin_User_Send_EmailModal" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Send Email(Currently in Developement)</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+
+                        <form action="{% url 'admin_users_details' user.id %}" method="post">
+                            {% csrf_token %}
+                            <input name="admin_user_modal" value="email" hidden>
+                            <div class="modal-body">
+
+                                <div class="mb-3">
+                                    <label for="#admin_user_send_email" class="form-label">Email:</label>
+                                    <textarea class="form-control" id="admin_user_send_email" rows="3"></textarea>
+                                </div>
+                                
+                            </div>
+        
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">No</button>
+                                <button type="submit" class="btn btn-success">Send</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal fade" id="admin_User_Send_TextModal" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Send Text Message(Currently in Developement)</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+
+                        <form action="{% url 'admin_users_details' user.id %}" method="post">
+                            {% csrf_token %}
+                            <input name="admin_user_modal" value="text" hidden>
+                            <div class="modal-body">
+
+                                <div class="mb-3">
+                                    <label for="#admin_user_send_text" class="form-label">Text message:</label>
+                                    <textarea class="form-control" id="admin_user_send_text" rows="3" max_length="200"></textarea>
+                                </div>
+                                
+                            </div>
+        
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">No</button>
+                                <button type="submit" class="btn btn-success">Send</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    {% else %}
+        <div class="row">
+            <div class="col">
+                <p class="mt-5 text-center fst-italic">
+                    You have insufficient permissions
+                </p>
+            </div>
+        </div>
+
+    {% endif %}
+
+
+
+    
+
+{% endblock %}

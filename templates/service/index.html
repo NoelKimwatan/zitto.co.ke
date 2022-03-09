@@ -1,0 +1,375 @@
+{% extends 'service/base.html' %}
+{% load humanize %}
+{% load static %}
+
+{% block content %}
+
+
+{% if messages %}
+    <div class="container-fluid">
+        {% for message in messages %}
+            {% if message.level >= 30  %}
+
+                <div class="alert alert-danger mb-2" role="alert">
+                    {{message}}
+                </div>
+
+            {% else %}
+                <div class="alert alert-success mb-2" role="alert">
+                    {{message}}
+                </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+{% endif %}
+
+
+
+
+<!-- <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+    <div id="liveToast" class="toast " role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="10000">
+        <div class="toast-header">
+            <img src="{% static 'images/WebsiteFavicon/06.png' %}" style="width: 30px;" class="rounded me-2" alt="...">
+            <strong class="me-auto p-2">Error</strong>
+            <small>now</small>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+
+        <div class="toast-body">
+            Hello, world! This is a toast message.
+        </div>
+    </div>
+</div> -->
+
+    {% if request.user.is_authenticated %}
+        <div class="custom_jumbotron">
+            <div class="jumbotron_container">
+                <div class="jumbotron_details text-center">
+                </div>
+            </div>
+        </div>
+
+        <div class="container-fluid">
+            <div class="row icon_section d-flex align-items-center">
+                <div class="col-12 col-sm-6 col-md-3 ">
+                    <div class="d-flex d-inline box align-items-center my-2">
+                        <i class="fas fa-wallet box_icon me-3"></i>
+                        Fast secure payment
+                    </div>
+                </div>
+
+                <div class="col-12 col-sm-6 col-md-3">
+                    <div class="d-flex d-inline box align-items-center my-2">
+                        <i class="fas fa-star box_icon me-3"></i>
+                        Great services
+                    </div>
+                </div>
+
+                <div class="col-12 col-sm-6 col-md-3">
+                    <div class="d-flex d-inline box align-items-center my-2">
+                        <i class="fas fa-shipping-fast box_icon me-3"></i>
+                        Fast delivery
+                    </div>
+                </div>
+
+                <div class="col-12 col-sm-6 col-md-3">
+                    <div class="d-flex d-inline box align-items-center my-2">
+                        <i class="fas fa-award box_icon me-3"></i>
+                        Best brands
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    {% else %}
+        <div class="container-fluid">
+            <div class="row ">
+                <div class="col-12">
+                    <div class="row">
+                        <div class="col-12 col-md-8 theme_color_mix ">
+                            
+        
+                            <div class="row justify-content-center">
+                                <div class="col-10">
+
+                                    <h4 class="my-3 ">What would you want us to ship for you ?</h4> 
+
+                                    <form class="" method="post" action="{% url 'guest_order' %}">
+                                        {% csrf_token %}
+
+                                        <input type="hidden" name="value_no" value="1">
+                
+                                        <div class="mb-3">
+                                            <label for="name_input" class="form-label">Product name</label>
+                                            <input type="text" class="form-control" id="name_input" name="name" required>
+                                            <div id="linkhelp" class="form-text text-white">Please enter a name e.g laptop</div>
+                                        </div> 
+                
+                                        <div class="mb-3">
+                                        <label for="link_input" class="form-label">Link</label>
+                                        <input type="text" class="form-control" id="link_input" name="link" required>
+                                        <div id="linkhelp" class="form-text text-white">Please enter a valid link.</div>
+                                        </div>
+                    
+                                        <div class="row">
+                                            <div class="col-10">
+                                                <div class="mb-3">
+                                                    <label for="linkdescription" class="form-label">Description</label>
+                                                    <textarea class="form-control" id="linkdescription" rows="5" name="description"></textarea>
+                                                    <div id="linkdescriptionhelp" class="form-text text-white">Please enter a any relevant description such as color,size e.t.c</div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-2 d-flex justify-content-center ">
+                                                <div class="d-flex align-items-center ">
+                                                    <input type="submit" class="btn btn-light straight_borders" name="submit" value="Next">
+                                                </div>
+                                            </div>
+
+                                        </div>
+                    
+                    
+
+                                        
+                                    </form>
+                                </div>
+        
+                            </div>
+        
+            
+                        </div>
+            
+                        <div class="col-12 d-none d-md-block col-md-4 ">
+                            <div class="row justify-content-center">
+                                <div class="col-8 ">
+                                    <h4 class="my-3 text-center">Existing users login here</h4>
+
+                                    <form method="post" action="{% url 'login' %}" >
+                                        {% csrf_token %}
+                
+                                        {% if request.GET.next %}
+                                            <input type="hidden" name="next" value="{{ request.GET.next }}">
+                                        {% endif %}
+                                    
+                                        
+                
+                                        <div class="mb-3">
+                                        <label for="signup_email" class="form-label">Email address</label>
+                                        <input type="email" name="email" class="form-control" id="signup_email">
+                                        </div>
+                
+                                        <div class="mb-3 mt-4">
+                                            <label for="password1" class="form-label">Password</label>
+                                            <input type="password" name="password" class="form-control" id="password">
+                                        </div>
+
+                                        <div class="mb-3 form-check">
+                                            <input type="checkbox" class="form-check-input" id="terms_and-conditions" required>
+                                            <label class="form-check-label" for="terms_and">
+                                                I agree to all of Zitto's <a href="{% url 'terms_and_conditions' %}" class="nothing_to_view_admin_and_customer_link">terms and conditions</a>
+                                            </label>
+                                        </div>
+                
+                                        <button type="submit" class="btn btn-outline-dark straight_borders">Log in</button>
+                                        
+                                            
+                                        <div class="row mt-5">
+                                            <div class="col text-center">
+                                                Dont have an account ? <a class="signup_login_redirect_two" href="{% url 'signup' %}">Sign up here</a>
+                                            </div>
+                                        </div>
+                
+                                        
+                
+                                    </form>
+                                </div>
+        
+                            </div>
+            
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+
+            <div class="row icon_section d-flex align-items-center">
+                <div class="col-12 col-sm-6 col-md-3 ">
+                    <div class="d-flex d-inline box align-items-center my-2">
+                        <i class="fas fa-wallet box_icon me-3"></i>
+                        Fast secure payment
+                    </div>
+                </div>
+
+                <div class="col-12 col-sm-6 col-md-3">
+                    <div class="d-flex d-inline box align-items-center my-2">
+                        <i class="fas fa-star box_icon me-3"></i>
+                        Great services
+                    </div>
+                </div>
+
+                <div class="col-12 col-sm-6 col-md-3">
+                    <div class="d-flex d-inline box align-items-center my-2">
+                        <i class="fas fa-shipping-fast box_icon me-3"></i>
+                        Fast delivery
+                    </div>
+                </div>
+
+                <div class="col-12 col-sm-6 col-md-3">
+                    <div class="d-flex d-inline box align-items-center my-2">
+                        <i class="fas fa-award box_icon me-3"></i>
+                        Best brands
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
+
+
+
+
+    <div class="container-fluid section_break" id="about_us_section">
+        <div class="body_section_color row mt-4">
+            <div class="col-12 col-md-8 my-5 ms-auto">
+
+                <h1 class="">About us</h1>
+            
+                <p>
+                    Zitto is an end to end e-commerce shipping solution powered by Click and Ship Limited. 
+                    Launched in 2021, this solution facilitates a fast, worry free, 
+                    secure and cost-effective shipping for individuals and businesses in the evolving world of e-commerce. 
+                </p>
+
+                <p>
+                    We are continuously adapting to the changing times to offer the best network solutions to deliver your goods and our staff are dedicated to offer an absolute service excellence. 
+                    Zitto provides a seamless solution when shopping from the USA, UAE, EU and UK and thereafter forwarding your package to Kenya.
+                </p>
+
+                <p>
+                    The service is a one stop shop from the time you click to the time we ship and your package arrives safely in your hands. 
+                    End to end seamless service.
+                </p>
+
+                <p>
+                    Click and Ship Limited is registered with the Companies Registry in the republic of Kenya, 
+                    incorporated under the Companies Act, 2015 as a PRIVATE LIMITED COMPANY. 
+                    Zitto is a trademark registered to Click and Ship Limited at the Kenya Industrial Property Institute.
+                </p>
+
+            </div>
+        </div>     
+        <div id="how_it_works">
+
+        </div>  
+    </div>
+
+
+    <div class="container-fluid theme_color_mix_two section_break">
+        <div class="row">
+            <div class="col-12 col-md-9">
+                <h1 class="mb-3">How it works</h1>    
+                Zitto is the super easy way to ship all your favourite online purchases from the USA, UAE, EU and UK. 
+                All you have to do is follow these 5 steps:
+
+                <ol>
+                    <li>
+                        <b>SIGN-UP FOR FREE</b>
+                    </li>
+                    <p>
+                        Get your very own virtual address in an instant!
+                    </p>
+
+                    <li>
+                        <b>CREATE A SHIP REQUEST</b>
+                    </li>
+                    <p>
+                        Enter the basic details of what you would like us to help you ship in. 
+                        Name it, provide a short description and add a website link for the item. 
+                        Our staff will review the request and get back to you with a quote and estimated shipment time.
+                    </p>
+
+                    <li>
+                        <b>REVIEW AND APPROVE YOUR PAYMENT</b>
+                    </li>
+                    <p>
+                        Once you review and approve the estimate, 
+                        make the required payment and the rest of the process will be automated until the package arrives to your location.
+                    </p>
+
+                    <li>
+                        <b>TRACK YOUR PACKAGE</b>
+                    </li>
+                    <p>
+                        Sit back and relax, watch your package step by step. 
+                        No more need to call or text. 
+                        Enjoy free tracking of your package as it makes its way to your doorstep, all details available in your portal.
+                    </p>
+
+                    <li>
+                        <b>SHIPPING CHARGES AND DELIVERY SCHEDULING</b>
+                    </li>
+                    <p>
+                        Once the item has arrived you will be notified of the shipping charges and relevant taxes incurred for your review and approval. 
+                        You can then schedule delivery of your item.
+                    </p>
+
+                </ol>
+
+                
+            </div>
+
+            <div class="col-12 col-md-2 ms-md-5 d-flex justify-content-center align-items-center">
+                <a role="button" class="btn btn-lg white_button my-2" href="{% url 'order' %}" >Order Now</a>
+            </div>
+
+            <div id="operating_regions">
+
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid section_break">
+        <div class="row body_section_color">
+            <div class="col-12 col-md-6 ms-auto">
+
+                <h1>Operating Regions</h1>
+                <p class="mb-0">
+                    We currently ship items from 3 regions arounds the world. The USA, UAE, EU and UK
+                </p>
+
+            </div>
+        </div>
+    
+    </div>
+
+    <div class="container-fluid theme_color_mix_two section_break">
+        <div class="row">
+            <div class="col-12 col-md-6">
+                <h1 class="mb-3">Prohibited Items</h1>    
+                Due to customs and airline regulations, there are some items which are prohibited, 
+                and some which are restricted. Prohibited items cannot be shipped under any circumstance. 
+                Restricted items can be shipped, but additional approvals can sometimes take time, 
+                and add a day or more on to your delivery date. Make sure to check the list of PROHIBITED and RESTRICTED items before you shop.
+            </div>
+
+            <div class="col-12 col-md-6 d-flex justify-content-center align-items-center ">
+                <a role="button" class="btn btn-lg white_button mt-3" href="{% url 'prohibited_items' %}" >View Prohibited Items</a>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{% endblock %}

@@ -1,0 +1,13 @@
+venv/
+credentials
+db.sqlite3
+.env
+.DS_Store
+.python-version
+b2c Code.py
+temp.txt
+
+# Elastic Beanstalk Files
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml

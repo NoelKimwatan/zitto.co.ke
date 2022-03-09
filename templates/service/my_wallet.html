@@ -1,0 +1,72 @@
+{% extends 'service/base_my_wallet.html' %}
+{% load humanize %}
+
+{% block my_account_content %}
+    <div class="row theme_color_mix vh_25 align-items-center">
+        {% if messages %}
+            {% for message in messages %}
+                {% if message.level >= 30  %}
+                    <div class="alert alert-danger mb-2" role="alert">
+                        {{message}}
+                    </div>
+                {% else %}
+                    <div class="alert alert-success mb-2" role="alert">
+                        {{message}}
+                    </div>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+
+        <div class="col-12 text-center">
+            Available balance
+        </div>
+
+        <div class="col-12 text-center mt-0">
+            KES {{ wallet.balance }}
+        </div>
+    </div>
+
+    {% if transactions %}
+        <div class="row">
+            <div class="col-12">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Amount</th>
+                                <th scope="col">Date</th>
+                                <th scope="col">Status</th>
+                                <th scope="col">Type</th>
+                                <th scope="col">Reference</th>
+                                <th scope="col">Message</th>
+                            </tr>
+                        </thead>
+        
+                        <tbody>
+                            {% for transaction in transactions reversed %}
+                                <tr>
+                                    <th scope="row">{{ forloop.counter }}</th>
+                                    <td>KES {{ transaction.amount|intcomma }}</td>
+                                    <td>{{ transaction.date|date:"d M Y  H:i"  }}</td>
+                                    <td>{{ transaction.get_status_display }}</td>
+                                    <td>{{ transaction.type }}-{{ transaction.get_payment_mode_display }}</td>
+                                    <td>{{ transaction.reference|default_if_none:"" }}</td>
+                                    <td>{{ transaction.message|default_if_none:"" }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+    {% else %}
+        <p class="mt-5 text-center fst-italic">
+            You currently dont have any transactions. 
+            <a href="{% url 'order' %}" class="nothing_to_view_admin_and_customer_link">Create ship request</a> or 
+            <a href="{% url 'deposit' %}" class="nothing_to_view_admin_and_customer_link" >add funds</a>
+        </p>
+    {% endif %}
+
+{% endblock %}

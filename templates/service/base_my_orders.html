@@ -1,0 +1,311 @@
+{% extends 'service/base.html' %}
+{% load static %}
+{% load humanize %}
+
+{% block content %}
+
+    <div class="container-fluid">
+        <div class="row vh_45">
+            
+            <div class="col-12 navbar-color px-0 d-block d-md-none"> 
+                <button class="btn my-3 mx-3 " type="button" data-bs-toggle="offcanvas" data-bs-target="#navbar_offcanvas" >
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+
+            <div class="col-0 col-md-3 col-xl-2 navbar-color d-none d-md-block">
+                <ul class="nav side-navbar flex-column mb-auto">
+                    <li class="nav-item">
+                        <a href="{% url 'my_orders' %}" class="nav-link d-flex d-inline pe-0
+                            {% if sub_path == 'dashboard' %}
+                                active
+                            {% else %}
+                
+                            {% endif %}
+                        ">
+                            <div class="me-0 me-md-2">
+                                <i class="fas fa-tachometer-alt"></i>
+                            </div>
+
+                            <div class="d-block side_navbar_font">
+                                Dashboard
+                            </div>
+                        </a>
+                    </li>
+            
+
+
+                    <li class="nav-item ">
+                        <a href="{% url 'orders_under_review' %}" class="nav-link d-flex d-inline
+                            {% if sub_path == 'orders_under_review' %}
+                                active
+                            {% else %}
+                
+                            {% endif %}
+                        ">
+                            <div class="me-0 me-md-2">
+                                <i class="fas fa-search-dollar"></i>
+                            </div>
+
+                            <div class="d-block side_navbar_font">
+                                Under review
+                            </div>
+                            {% if orders_under_review %}
+                                <span class="badge bg-secondary ms-auto">{{ orders_under_review|length }}</span>
+                            {% endif %}
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a href="{% url 'action_required' %}" class="nav-link d-flex d-inline
+                            {% if sub_path == 'action_required' %}
+                                active
+                            {% else %}
+                
+                            {% endif %}
+                        ">
+                            <div class="me-0 me-md-2">
+                                <i class="fas fa-exclamation-circle"></i>
+                            </div>
+
+                            <div class="d-block side_navbar_font">
+                                Action required
+                            </div>
+                            {% if orders_action_required %}
+                                <span class="badge bg-danger ms-auto ">{{ orders_action_required|length }}</span>
+                            {% endif %}
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a href="{% url 'orders' %}" class="nav-link d-flex d-inline
+                            {% if sub_path == 'orders' %}
+                                active
+                            {% else %}
+                
+                            {% endif %}
+                        ">
+                            <div class="me-0 me-md-2">
+                                <i class="fas fa-box-open"></i>
+                            </div>
+
+                            <div class="d-block side_navbar_font">
+                                Orders
+                            </div>
+                            {% if orders_orders %}
+                                <span class="badge bg-secondary ms-auto">{{ orders_orders|length }}</span>
+                            {% endif %}
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a href="{% url 'ready_for_delivery' %}" class="nav-link d-flex d-inline
+                            {% if sub_path == 'ready_for_delivery' %}
+                                active
+                            {% else %}
+                
+                            {% endif %}
+                        ">
+                            <div class="me-0 me-md-2">
+                                <i class="fas fa-people-carry"></i>
+                            </div>
+
+                            <div class="d-block side_navbar_font">
+                                Ready for delivery
+                            </div>
+                            {% if orders_ready_for_delivery %}
+                                <span class="badge bg-success ms-auto">{{ orders_ready_for_delivery|length }}</span>
+                            {% endif %}
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a href="{% url 'delivered' %}" class="nav-link d-flex d-inline
+                            {% if sub_path == 'delivered' %}
+                                active
+                            {% else %}
+                
+                            {% endif %}
+                        ">
+                            <div class="me-0 me-md-2">
+                                <i class="fas fa-parachute-box"></i>
+                            </div>
+
+                            <div class="d-block side_navbar_font">
+                                Delivered
+                            </div>
+                            {% if orders_delivered %}
+                                <span class="badge bg-secondary ms-auto">{{ orders_delivered|length }}</span>
+                            {% endif %}
+                        </a>
+                    </li>
+
+                </ul>
+            </div>
+
+            <div class="offcanvas offcanvas-start navbar-color" data-bs-scroll="false" data-bs-backdrop="true"  id="navbar_offcanvas" >
+
+                <div class="offcanvas-header ">
+                    <button type="button" class="btn-close text-reset ms-auto" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                </div>
+
+                <div class="offcanvas-header d-flex justify-content-center">
+                    <div class="d-flex justify-content-center">
+                        <a class="navbar-brand" href="{% url 'index' %}">
+                            <img src="{% static 'images/zitto.png' %}" alt="Zitto Logo" class="zitto_logo_offcanvas">
+                        </a>
+                    </div>
+                </div>
+
+
+
+                <div class="offcanvas-body">
+                    <ul class="nav side-navbar flex-column mb-auto">
+                        <li class="nav-item">
+                            <a href="{% url 'my_orders' %}" class="nav-link d-flex d-inline
+                                {% if sub_path == 'dashboard' %}
+                                    active
+                                {% else %}
+                    
+                                {% endif %}
+                            ">
+                                <div class="me-2">
+                                    <i class="fas fa-tachometer-alt"></i>
+                                </div>
+    
+                                <div class="d-block side_navbar_font">
+                                    Dashboard
+                                </div>
+                            </a>
+                        </li>
+                
+    
+    
+                        <li class="nav-item">
+                            <a href="{% url 'orders_under_review' %}" class="nav-link d-flex d-inline
+                                {% if sub_path == 'orders_under_review' %}
+                                    active
+                                {% else %}
+                    
+                                {% endif %}
+                            ">
+                                <div class="me-2">
+                                    <i class="fas fa-search-dollar"></i>
+                                </div>
+    
+                                <div class="d-block side_navbar_font">
+                                    Under review
+                                    
+                                    {% if orders_under_review %}
+                                        <span class="badge bg-secondary ms-2">{{ orders_under_review|length }}</span>
+                                    {% endif %}
+                                </div>
+                            </a>
+                        </li>
+    
+                        <li class="nav-item">
+                            <a href="{% url 'action_required' %}" class="nav-link d-flex d-inline
+                                {% if sub_path == 'action_required' %}
+                                    active
+                                {% else %}
+                    
+                                {% endif %}
+                            ">
+                                <div class="me-2">
+                                    <i class="fas fa-exclamation-circle"></i>
+                                </div>
+    
+                                <div class="d-block side_navbar_font">
+                                    Action required
+
+                                    {% if orders_action_required %}
+                                        <span class="badge bg-danger ms-2">{{ orders_action_required|length }}</span>
+                                    {% endif %}
+                                </div>
+                            </a>
+                        </li>
+    
+                        <li class="nav-item">
+                            <a href="{% url 'orders' %}" class="nav-link d-flex d-inline
+                                {% if sub_path == 'orders' %}
+                                    active
+                                {% else %}
+                    
+                                {% endif %}
+                            ">
+                                <div class="me-2">
+                                    <i class="fas fa-box-open"></i>
+                                </div>
+    
+                                <div class="d-block side_navbar_font">
+                                    Orders
+
+                                    {% if orders %}
+                                        <span class="badge bg-secondary ms-2">{{ orders|length }}</span>
+                                    {% endif %}
+                                </div>
+                            </a>
+                        </li>
+    
+                        <li class="nav-item">
+                            <a href="{% url 'ready_for_delivery' %}" class="nav-link d-flex d-inline
+                                {% if sub_path == 'ready_for_delivery' %}
+                                    active
+                                {% else %}
+                    
+                                {% endif %}
+                            ">
+                                <div class="me-2">
+                                    <i class="fas fa-people-carry"></i>
+                                </div>
+    
+                                <div class="d-block side_navbar_font">
+                                    Ready for delivery
+
+                                    {% if orders_ready_for_delivery %}
+                                        <span class="badge bg-secondary ms-2">{{ orders_ready_for_delivery|length }}</span>
+                                    {% endif %}
+                                </div>
+                            </a>
+                        </li>
+    
+                        <li class="nav-item">
+                            <a href="{% url 'delivered' %}" class="nav-link d-flex d-inline
+                                {% if sub_path == 'delivered' %}
+                                    active
+                                {% else %}
+                    
+                                {% endif %}
+                            ">
+                                <div class="me-2">
+                                    <i class="fas fa-parachute-box"></i>
+                                </div>
+    
+                                <div class="d-block side_navbar_font">
+                                    Delivered
+                                    
+                                    {% if orders_delivered %}
+                                        <span class="badge bg-success ms-2">{{ orders_delivered|length }}</span>
+                                    {% endif %}
+                                </div>
+                            </a>
+                        </li>
+    
+                    </ul>
+                </div>
+            </div>
+         
+
+            <div class="col-12 col-md-9 col-xl-10">
+                {% block my_orders_content %}
+
+                {% endblock %}
+            </div>
+
+        </div>
+    </div>
+
+
+  
+
+{% endblock %}
